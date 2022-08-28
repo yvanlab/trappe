@@ -1,0 +1,15 @@
+{
+    "datetime": "Sat Jan 29 22:21:53 2022 ",
+    "version": "1",
+    "uptime": "51",
+    "build_date": "Jan 29 2022 18:23:39",
+    "ssid": "freebox",
+    "password": "10970884LABRITYL",
+    "routerIP": "192.168.1.254",
+    "IP": "192.168.1.169",
+    "moduleName": "Latrappe-debug",
+    "mdns": "Latrappe",
+    "mdnsAP": "LatrappeDAP",
+    "publicKey": "",
+    "privateKey": ""
+}

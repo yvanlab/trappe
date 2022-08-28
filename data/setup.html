@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset=utf-8>
+	<title>Setup</title>
+	<link rel=stylesheet href=style.css>
+</head>
+
+<body>
+	
+	<form id=Network action="/setSetup" method="get">
+		<h1>Fonctions de base</h1>
+		<div style="text-align: center;">
+			
+			<p>
+				<table width=100%>
+				<tr>
+					<td><a href="/firmware" target="_blank">Firmware</a></td>
+					<td><a href="/fileSetup" target="_blank">Congig file</a></td>
+				</tr>
+				<tr>
+					<td><a href="/restart" target="_blank">Redemarrer</a></td>
+					<td><a href="/reset" target="_blank">Wifi Reset</a></td>
+				</tr>			
+				</table>
+			</p>
+		</div>	
+		
+		
+		<h1>Configuration du Module</h1>
+		<fieldset>
+			<legend>Routeur</legend>
+			<ol>
+				<li>
+					<label>ssid</label>
+					<input name='ssid' required></input>
+				</li>
+				<li>
+					<label>password</label>
+					<input name=password type=text required>
+			</ol>
+		</fieldset>
+		<fieldset>
+			<legend>Parametre Module</legend>
+			<ol>
+				<li>
+					<label for=routerIP >router IP</label>
+					<input name=routerIP type=text>
+				</li>
+				<li>
+					<label for=IP>Module IP</label>
+					<input name=IP type=text required>
+				</li>
+				<li>
+					<label for=moduleName>Module Name</label>
+					<input name=moduleName type=text required>
+				</li>
+				<li>
+					<label for=mdns>mdns</label>
+					<input name=mdns type=text required>
+				</li>
+				<li>
+					<label for=mdnsAP>mdnsAP</label>
+					<input name=mdnsAP type=text required>
+				</li>
+
+			</ol>
+		</fieldset>
+		<fieldset>
+			<legend>IOT Dependence</legend>
+			<ol>
+				<li>
+					<label>Clef privee</label>
+					<input name='privateKey' ></input>
+				</li>
+				<li>
+					<label>Clef public</label>
+					<input name=publicKey type=text>
+			</ol>
+		</fieldset>
+
+		<fieldset>
+			<button type=submit>Sauver</button>
+		</fieldset>
+	</form>
+	<script>
+function update(responseText) {
+				var myObj = JSON.parse(responseText);
+				document.getElementsByName("ssid")[0].value = myObj.ssid;
+				document.getElementsByName("password")[0].value = myObj.password;
+				document.getElementsByName("routerIP")[0].value = myObj.routerIP;
+				document.getElementsByName("IP")[0].value = myObj.IP;
+
+				document.getElementsByName("moduleName")[0].value = myObj.moduleName;
+				document.getElementsByName("mdns")[0].value = myObj.mdns;
+				document.getElementsByName("mdnsAP")[0].value = myObj.mdnsAP;
+
+				document.getElementsByName("publicKey")[0].value = myObj.publicKey;
+				document.getElementsByName("privateKey")[0].value = myObj.privateKey;
+	}
+		
+
+function init() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						update(this.responseText)
+					}
+				};
+
+				xhttp.open("GET", "jsonSetup", true);
+				xhttp.send();
+			}
+			window.onload = init;
+	</script>
+</body>
+
+</html>

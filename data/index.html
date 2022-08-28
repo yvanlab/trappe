@@ -1,0 +1,131 @@
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<p>&nbsp;</p>
+	<h1 style="text-align: center;">
+		<span id="modulename">Module</span> configuration
+	</h1>
+	<div style="text-align: center;">
+		<p>
+			Version : <span id="version">3.0</span>
+		</p>
+	</div>
+	<div style="text-align: center;">
+		<p>
+			Date build : <span id="builddate">10/08/1900</span>
+		</p>
+	</div>
+	<div style="text-align: center;">
+		<p>
+			Up time : <span id="uptime">un moment</span>
+		</p>
+	</div>
+	<div style="text-align: center;">
+		<p>
+			<a href="/credential" target="_blank">Credentials</a>/
+			<a href="/reset" target="_blank">Wifi Reset</a>/<a
+				href="/restart" target="_blank">Restart</a>/<a
+				href="/firmware" target="_blank">Firmware</a>/<a
+				href="/config" target="_blank">Configuration</a>/<a
+				href="/prog" target="_blank">Programme</a>
+		</p>
+	</div>
+	<hr
+		style="margin-top: 51px; margin-left: auto; width: 177px; margin-right: auto;" />
+	<div>
+		<h3 style="height: 3px;">Parametrage</h3>
+	</div>
+	<div>
+		<hr />
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<table>
+							<tbody>
+								<tr>
+									<th>Duree descente (s)</th>
+									<th>Duree Monte (s)</th>
+									<th>Max Courant (A)</th>
+								</tr>
+								<tr>
+									<td><input id="timeDownSec" type="number" onchange="changeSetting('timeDownSec', this.value)" /></td>
+									<td><input id="timeUpSec" type="number" onchange="changeSetting('timeUpSec', this.value)" /></td>
+									<td><input id="maxPowerAmp" type="number" onchange="changeSetting('maxPowerAmp', this.value)" /></td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<hr />
+	<h2>
+		<button onclick="saveConfiguration()">Save</button>
+	</h2>
+
+	<script>
+
+		
+			function saveConfiguration() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						update(this.responseText)
+					}
+				};
+	
+				xhttp.open("GET", "saveParam",true);
+				xhttp.send();	
+			}
+		
+
+			
+			function changeSetting(variable, val) {
+				document.getElementById("version").innerHTML = val;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						//update(this.responseText)
+					}
+				};
+				document.getElementById("version").innerHTML = val;
+				xhttp.open("GET", "setParam?" + variable + "=" + String(val),
+						true);
+				xhttp.send();
+			};
+
+			function update(paramText,optionsText) {
+				var myObj = JSON.parse(paramText);
+				document.getElementById("maxPowerAmp").value = myObj.maxPowerAmp;
+				document.getElementById("timeUpSec").value = myObj.timeUpSec;
+				document.getElementById("timeDownSec").value = myObj.timeDownSec;
+			}	
+
+			
+
+
+
+
+			function init() {
+			
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						param = true;
+							update(xhttp.responseText)
+						}
+				};
+
+				xhttp.open("GET", "jsonParam", true);
+				xhttp.send();
+			}
+			window.onload = init;
+		</script>
+
+</body>
+</html>
