@@ -28,6 +28,8 @@ public:
 
     void handle();
     bool isActionUnderProgress();
+    void beging();
+    
     BUTTON_PRESSED getButtonPressed();
     BUTTON_STATUS  getButtonStatus();
     void buttonInterrupt();

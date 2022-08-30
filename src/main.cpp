@@ -1,5 +1,8 @@
 #include <main.h>
 portMUX_TYPE wtimerMux = portMUX_INITIALIZER_UNLOCKED;
+QueueHandle_t xQueueCommand;
+
+ 
 uint8_t pinLed = 5;
 const uint8_t pinInyensity 	= PIN_INTENSITY;
 const uint8_t pinButtonUp 	= PIN_BUTTON_UP;
@@ -22,7 +25,14 @@ void setup() {
 	Serial.println("start debuging");
 	DEBUGLOGF("Frq : %d \n", ESP.getCpuFreqMHz());
 	DEBUGLOGF("Temp : %f \n", temperatureRead());
-	
+
+   /* Create a queue capable of containing 10 unsigned long values. */
+    xQueueCommand = xQueueCreate( 5, sizeof( uint8_t ) );
+	if( xQueueCommand == NULL )
+    {
+        DEBUGLOGF("Queue not created : %d \n", xQueueCommand);
+    }
+
 
 	config.begin();
 	param.begin();
@@ -30,25 +40,36 @@ void setup() {
 	DEBUGLOG(myWifi.toString());
 	ui.begin();
 	//ui.setCallback(manageDisplay);
+	commandDriver.begin();
+	buttonCtl.beging();
 
 	mtTimer.begin(timerFrequence);
 	mtTimer.setCustomMS(50);
 }
 
 void loop() {
-	if (buttonCtl.isActionUnderProgress()) {
-		if (buttonCtl.getButtonPressed() == ButtonControl::BUTTON_DOWN) {
+	ButtonControl::BUTTON_PRESSED  btAction;
+	if( xQueueReceive( xQueueCommand,
+                         &( btAction ),
+                         ( TickType_t ) 10 ) == pdPASS )
+      {
+         /* xRxedStructure now contains a copy of xMessage. */
+
+	//if (buttonCtl.isActionUnderProgress()) {
+		if (btAction == ButtonControl::BUTTON_DOWN) {
 			commandDriver.startActioneurDOWN();
-		} else if (buttonCtl.getButtonPressed() == ButtonControl::BUTTON_UP) {
+		} else if (btAction == ButtonControl::BUTTON_UP) {
 			commandDriver.startActioneurUP();
-		} else if (buttonCtl.getButtonPressed() == ButtonControl::BUTTON_BOTH) {
+		} else if (btAction == ButtonControl::BUTTON_BOTH) {
 			commandDriver.stopActionneur();
+		} else {
+			DEBUGLOGF("CMD not known [%d]\n",btAction);
 		}
 	}
 	if (commandDriver.isActionUnderProgress()) {
 		intensityCtl.handle();
 	}
 	commandDriver.handle(intensityCtl.bIsOverTreshold);
-	
-  // put your main code here, to run repeatedly:
+	ui.handleServer();
+ // put your main code here, to run repeatedly:
 }

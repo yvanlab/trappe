@@ -21,6 +21,7 @@ Parameters::Parameters(unsigned char pinLed)
 
 uint8_t Parameters::begin()
 {
+  DEBUGLOG("Begin");
   return readData();
 };
 

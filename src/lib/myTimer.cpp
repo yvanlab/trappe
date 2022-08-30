@@ -58,6 +58,7 @@ void IRAM_ATTR timerCallback() {
 } // End of timerCallback
 
 void MyTimer::begin(uint32_t freqMS){
+DEBUGLOG("Begin");  
 #ifdef ESP8266
   os_timer_setfn(&myTimer,timerCallback, NULL);
   os_timer_arm(&myTimer, freqMS, true);

@@ -28,12 +28,13 @@ public:
     
 
     ActionneurDriver(uint8_t pinDown, uint8_t pinUp);
-
+    void begin();
     void handle(boolean isOverIntensity);
+    
+    void stopTechnicalActionneur();
     void stopActionneur();
 
     void startActioneurUP();
-    
     void startActioneurDOWN();
 
     void changeDirection(ACTIONNEUR_COMMAND direction);
@@ -41,11 +42,14 @@ public:
     bool isActionUnderProgress();
     
     String toJson() {
-        return "\"command\":\"" + String(m_command) + "\"";
+        String res;
+        res =  "\"command\":\"" + String(m_command) + "\",";
+        res +=  "\"status\":\"" + String(m_status) + "\"";
+        return res;
     };
 
     String getClassName() { return __PRETTY_FUNCTION__ ;}
-    uint8_t calculateDelay(uint8_t delay);
+    uint32_t calculateDelay(uint32_t delay);
     
     
     ACTIONNEUR_COMMAND m_command = COMMAND_STOP;

@@ -19,6 +19,7 @@
 
 #include "parameters.h"
 extern Parameters            param;
+extern QueueHandle_t         xQueueCommand;
 
 #include "intensityControl.h"
 #include "actionneurDriver.h"

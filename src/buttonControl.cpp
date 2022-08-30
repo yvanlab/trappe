@@ -7,14 +7,21 @@ ButtonControl::ButtonControl(uint8_t pinBtDown, uint8_t pinBtUp)
     m_pinButtonUp   = pinBtUp;
     m_pinButtonDown = pinBtDown;
     
+
+}
+
+void ButtonControl::beging() {
+    DEBUGLOG("Begin");
     pinMode(m_pinButtonUp, INPUT_PULLDOWN);
     pinMode(m_pinButtonDown, INPUT_PULLDOWN);
 
     //attach interrupt
-    attachInterrupt(m_pinButtonUp,  std::bind(&ButtonControl::buttonInterrupt, this), CHANGE);
-    attachInterrupt(m_pinButtonDown,  std::bind(&ButtonControl::buttonInterrupt, this), CHANGE);
+    /*attachInterrupt(m_pinButtonUp,  std::bind(&ButtonControl::buttonInterrupt, this), CHANGE);
+    attachInterrupt(m_pinButtonDown,  std::bind(&ButtonControl::buttonInterrupt, this), CHANGE);*/
 
 }
+
+
 
 void IRAM_ATTR ButtonControl::buttonInterrupt() {
     

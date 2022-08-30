@@ -56,6 +56,11 @@
 									<td><input id="timeUpSec" type="number" onchange="changeSetting('timeUpSec', this.value)" /></td>
 									<td><input id="maxPowerAmp" type="number" onchange="changeSetting('maxPowerAmp', this.value)" /></td>
 								</tr>
+								<tr>
+									<td><button onclick="changeSetting('btDown', 1)">Fermer</button></td>
+									<td><button onclick="changeSetting('btUp', 1)">Ouvrir</button></td>
+									<td><button onclick="changeSetting('btStop', 1)">Stop</button></td>
+								</tr>
 							</tbody>
 						</table>
 					</td>
@@ -101,9 +106,14 @@
 
 			function update(paramText,optionsText) {
 				var myObj = JSON.parse(paramText);
-				document.getElementById("maxPowerAmp").value = myObj.maxPowerAmp;
-				document.getElementById("timeUpSec").value = myObj.timeUpSec;
-				document.getElementById("timeDownSec").value = myObj.timeDownSec;
+				document.getElementById("builddate").innerHTML = myObj.module.build_date;
+				document.getElementById("version").innerHTML = myObj.module.version;
+				document.getElementById("modulename").innerHTML = myObj.module.nom;
+				document.getElementById("uptime").innerHTML = myObj.module.uptime;
+				
+				document.getElementById("maxPowerAmp").value = myObj.setting.maxPowerAmp;
+				document.getElementById("timeUpSec").value = myObj.setting.timeUpSec;
+				document.getElementById("timeDownSec").value = myObj.setting.timeDownSec;
 			}	
 
 			

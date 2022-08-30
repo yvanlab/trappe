@@ -26,6 +26,8 @@ class IntensityControl : public ACS712
     };
     
     uint8_t begin() {
+        DEBUGLOG("Begin");
+        calibrate();
         m_delayHelper.startDelay(m_delay_ms);
         return 0;
     };

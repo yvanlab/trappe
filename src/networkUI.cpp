@@ -7,6 +7,7 @@
 
 
 wl_status_t NetworkUI::begin() {
+	DEBUGLOG("Begin");
 	wl_status_t res = UiHelper::begin();
 
 	//_server->on("/status", std::bind(&NetworkUI::dataJson, this));
@@ -112,8 +113,38 @@ void NetworkUI::setParameters()
 	else if ((str = _server->arg("maxPowerAmp")) != NULL)
 	{
 		m_parameters->m_maxPowerAmp = (uint8_t)atoi(str.c_str());;
+	} else if (_server->hasArg("btUp"))
+	{
+		uint8_t tmp = ButtonControl::BUTTON_UP;
+		DEBUGLOG("SEND UP");
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD UP");
+        }
+	}else if (_server->hasArg("btDown"))
+	{
+		uint8_t tmp = ButtonControl::BUTTON_DOWN;
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD UP");
+        }
+	}else if (_server->hasArg("btStop"))
+	{
+		uint8_t tmp = ButtonControl::BUTTON_BOTH;
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD BOTH");
+        }
 	}
-	
 	_server->send(200, "text/html", "ok");
 }	
 
