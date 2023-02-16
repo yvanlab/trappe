@@ -41,7 +41,9 @@ String  NetworkUI::jsonParam() {
 	
 	String tt("{\"module\":{");
 	tt += m_configuration->toJson() + "},"; 
-	tt += "\"setting\":{" + m_parameters->toJson() + "}";
+	tt += "\"setting\":{" + m_parameters->toJson() + "},";
+	tt += "\"actionneur\":{" + commandDriver.toJson() + "},";
+	tt += "\"buttons\":{" + buttonCtl.toJson() + "}";
 	tt += "}";	
 	_server->send(200, "text/html", tt);
 
@@ -101,6 +103,7 @@ void NetworkUI::setParameters()
 #endif
 
 	String str;
+	ButtonControl::BUTTON_GLOBAL_STATUS tmp;
 	if ((str = _server->arg("timeUpSec")) != NULL)
 	{
 		m_parameters->m_timeUpSec = (uint8_t)atoi(str.c_str());
@@ -115,7 +118,7 @@ void NetworkUI::setParameters()
 		m_parameters->m_maxPowerAmp = (uint8_t)atoi(str.c_str());;
 	} else if (_server->hasArg("btUp"))
 	{
-		uint8_t tmp = ButtonControl::BUTTON_UP;
+		tmp =  ButtonControl::BUTTON_OPEN_PRESSED;
 		DEBUGLOG("SEND UP");
 		if( xQueueSendToBack( xQueueCommand,
                              &tmp,
@@ -126,7 +129,7 @@ void NetworkUI::setParameters()
         }
 	}else if (_server->hasArg("btDown"))
 	{
-		uint8_t tmp = ButtonControl::BUTTON_DOWN;
+		tmp = ButtonControl::BUTTON_CLOSE_PRESSED;
 		if( xQueueSendToBack( xQueueCommand,
                              &tmp,
                              ( TickType_t ) 10 ) != pdPASS )
@@ -136,7 +139,43 @@ void NetworkUI::setParameters()
         }
 	}else if (_server->hasArg("btStop"))
 	{
-		uint8_t tmp = ButtonControl::BUTTON_BOTH;
+		tmp = ButtonControl::BUTTON_OPEN_AND_CLOSE_PRESSED;
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD BOTH");
+        }
+	}else if (_server->hasArg("btDownLong")) {
+		tmp = ButtonControl::BUTTON_CLOSE_PRESSED_LONG;
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD BOTH");
+        }
+	}else if (_server->hasArg("btUpLong")) {
+		tmp = ButtonControl::BUTTON_OPEN_PRESSED_LONG;
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD BOTH");
+        }
+	}else if (_server->hasArg("btStopDownLong")) {
+		tmp = ButtonControl::BUTTON_CLOSE_RELEASED_FROM_PRESSED_LONG;
+		if( xQueueSendToBack( xQueueCommand,
+                             &tmp,
+                             ( TickType_t ) 10 ) != pdPASS )
+        {
+            /* Failed to post the message, even after 10 ticks. */
+			DEBUGLOG("Failed to por CMD BOTH");
+        }
+	}else if (_server->hasArg("btStopUpLong")) {
+		tmp = ButtonControl::BUTTON_OPEN_RELEASED_FROM_PRESSED_LONG;
 		if( xQueueSendToBack( xQueueCommand,
                              &tmp,
                              ( TickType_t ) 10 ) != pdPASS )
@@ -145,6 +184,7 @@ void NetworkUI::setParameters()
 			DEBUGLOG("Failed to por CMD BOTH");
         }
 	}
+
 	_server->send(200, "text/html", "ok");
 }	
 

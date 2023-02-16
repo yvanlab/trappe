@@ -3,7 +3,7 @@
 #ifndef ActionneurDriver_h
 #define ActionneurDriver_h
 
-#include "main.h"
+
 
 class ActionneurDriver
 {
@@ -11,8 +11,8 @@ public:
     enum ACTIONNEUR_COMMAND
     {
         COMMAND_STOP = 0,
-        COMMAND_UP = 1,
-        COMMAND_DOWN = 2
+        COMMAND_OPEN = 1,
+        COMMAND_CLOSE = 2
     };
 
     enum ACTIONNEUR_STATUS
@@ -34,17 +34,20 @@ public:
     void stopTechnicalActionneur();
     void stopActionneur();
 
-    void startActioneurUP();
-    void startActioneurDOWN();
+    void startActioneurOpen();
+    void startActioneurClose();
 
     void changeDirection(ACTIONNEUR_COMMAND direction);
     
     bool isActionUnderProgress();
-    
+    bool isActionClosing() {return m_status == STATUS_CLOSING;};
+    bool isActionOpening() {return m_status == STATUS_OPENING;};
+
     String toJson() {
         String res;
         res =  "\"command\":\"" + String(m_command) + "\",";
-        res +=  "\"status\":\"" + String(m_status) + "\"";
+        res += "\"remaining_delay\":\"" + String(m_remainingDelay) + "\",";
+        res += "\"status\":\"" + String(m_status) + "\"";
         return res;
     };
 
@@ -53,7 +56,7 @@ public:
     
     
     ACTIONNEUR_COMMAND m_command = COMMAND_STOP;
-    ACTIONNEUR_STATUS m_status   = STATUS_CLOSED;
+    ACTIONNEUR_STATUS m_status   = STATUS_OPENED;
     uint8_t  m_pinCommandeUp;
     uint8_t  m_pinCommandeDown;
     DelayHelper m_delayHelper;

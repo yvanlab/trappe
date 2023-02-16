@@ -7,6 +7,7 @@
 #include <configHelper.h>
 #include <uiHelper.h>
 
+
 #include <SPIFFS.h>
 #include <SD.h>
 #include <FS.h>
@@ -16,19 +17,23 @@
 #include "configHelper.h"
 #include "wifiHelper.h"
 #include "uiHelper.h"
+#include "delayHelper.h"
 
 #include "parameters.h"
+
+
 extern Parameters            param;
 extern QueueHandle_t         xQueueCommand;
 
 #include "intensityControl.h"
+extern IntensityControl      intensityCtl;
+
 #include "actionneurDriver.h"
+extern ActionneurDriver      commandDriver;
 #include "buttonControl.h"
+extern ButtonControl	       buttonCtl;
+
 #include "networkUI.h"
-
-
-//#include "utils.h"
-
 
 #define PROC_ONE 0
 #define PROC_TWO 1

@@ -13,8 +13,6 @@
 
 #endif
 
-#include <delayHelper.h>
-#include <BaseHelper.h>
 #include "ACS712.h"
 
 
@@ -27,7 +25,9 @@ class IntensityControl : public ACS712
     
     uint8_t begin() {
         DEBUGLOG("Begin");
-        calibrate();
+        
+        int tmp = calibrate();
+        DEBUGLOGF("Calibrate [%d]\n",tmp);
         m_delayHelper.startDelay(m_delay_ms);
         return 0;
     };

@@ -31,7 +31,7 @@ public:
 	bool isDone() {return millis() > m_endMS;}
 
 protected:
-	uint32_t		m_endMS;
+	uint32_t		m_endMS=0;
 	
 
 };
