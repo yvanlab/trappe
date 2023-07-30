@@ -12,6 +12,7 @@
 #include <SD.h>
 #include <FS.h>
 #include "TimeLib.h"
+#include "myDebug.h"
 #include "lib/baseHelper.h"
 #include "myTimer.h"
 #include "configHelper.h"
@@ -21,6 +22,12 @@
 
 #include "parameters.h"
 
+
+extern uint8_t m_debugOutput;
+  #ifdef MCPOC_TELNET
+extern RemoteDebug m_debugTelnet;
+  #endif
+extern uint32_t previousTime;
 
 extern Parameters            param;
 extern QueueHandle_t         xQueueCommand;
@@ -35,6 +42,7 @@ extern ButtonControl	       buttonCtl;
 
 #include "networkUI.h"
 
+
 #define PROC_ONE 0
 #define PROC_TWO 1
 
@@ -42,9 +50,7 @@ extern ButtonControl	       buttonCtl;
 #define PIN_LED 2
 
 
-#ifdef MCPOC_TELNET
-//extern RemoteDebug          Debug;
-#endif
+
 
 #ifdef ESP32
 extern portMUX_TYPE 		wtimerMux;// = portMUX_INITIALIZER_UNLOCKED;

@@ -28,8 +28,8 @@ public:
     
 
     ActionneurDriver(uint8_t pinDown, uint8_t pinUp);
-    void begin();
-    void handle(boolean isOverIntensity);
+    void begin(uint8_t upSensor) ;
+    void handle(float fIntensity, bool isUpSensorActivated);
     
     void stopTechnicalActionneur();
     void stopActionneur();
@@ -53,6 +53,8 @@ public:
 
     String getClassName() { return __PRETTY_FUNCTION__ ;}
     uint32_t calculateDelay(uint32_t delay);
+    uint32_t getElapse();
+    uint32_t getRemaining();
     
     
     ACTIONNEUR_COMMAND m_command = COMMAND_STOP;
@@ -61,6 +63,14 @@ public:
     uint8_t  m_pinCommandeDown;
     DelayHelper m_delayHelper;
     uint32_t m_remainingDelay = 0;
+    uint32_t m_elapsedDelay = 0;
+    
+    uint32_t m_workigStartTime = 0;
+    uint32_t m_workigTime = 0;
+
+
+
+    DelayHelper m_delayIntensity;
 private:
 };
 

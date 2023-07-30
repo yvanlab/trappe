@@ -116,7 +116,12 @@ void NetworkUI::setParameters()
 	else if ((str = _server->arg("maxPowerAmp")) != NULL)
 	{
 		m_parameters->m_maxPowerAmp = (uint8_t)atoi(str.c_str());;
-	} else if (_server->hasArg("btUp"))
+	} 
+	else if ((str = _server->arg("managementMode")) != NULL)
+	{
+		m_parameters->m_managementMode = (MANAGEMENT_MODE)atoi(str.c_str());;
+	} 
+	else if (_server->hasArg("btUp"))
 	{
 		tmp =  ButtonControl::BUTTON_OPEN_PRESSED;
 		DEBUGLOG("SEND UP");

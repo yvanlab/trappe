@@ -16,6 +16,8 @@
   "setting": {
     "timeUpSec": "60",
     "timeDownSec": "60",
-    "maxPowerAmp": "10"
+    "maxPowerAmp": "10",
+    "minPowerAmp": "10",
+    "managementMode" : "0"
   }
 }

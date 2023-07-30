@@ -187,9 +187,7 @@ void IRAM_ATTR UiHelper::setSetup()
     void UiHelper::handleServer()
     {
         _server->handleClient();
-#ifdef MCPOC_TELNET
-        Debug.handle();
-#endif
+
 #ifdef OTA_FOR_ATOM
         ArduinoOTA.handle();
 #endif

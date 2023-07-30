@@ -1,8 +1,9 @@
-
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <body>
 	<p>&nbsp;</p>
 	<h1 style="text-align: center;">
@@ -25,14 +26,10 @@
 	</div>
 	<div style="text-align: center;">
 		<p>
-			<a href="/reset" target="_blank">Wifi Reset</a>/<a
-				href="/restart" target="_blank">Restart</a>/<a
-				href="/firmware" target="_blank">Firmware</a>/<a
-				href="/setup" target="_blank">Configuration</a>/<a
-		</p>
+			<a href="/reset" target="_blank">Wifi Reset</a>/<a href="/restart" target="_blank">Restart</a>/<a
+				href="/firmware" target="_blank">Firmware</a>/<a href="/setup" target="_blank">Configuration</a>/<a </p>
 	</div>
-	<hr
-		style="margin-top: 51px; margin-left: auto; width: 177px; margin-right: auto;" />
+	<hr style="margin-top: 51px; margin-left: auto; width: 177px; margin-right: auto;" />
 	<div>
 		<h3 style="height: 3px;">Parametrage</h3>
 	</div>
@@ -47,12 +44,28 @@
 								<tr>
 									<th>Duree descente (s)</th>
 									<th>Duree Monte (s)</th>
-									<th>Max Courant (A)</th>
+									<th>Courant (A)</th>
+									<th>Mode 0:Manu 1:Auto</th>
 								</tr>
 								<tr>
-									<td><input id="timeDownSec" type="number" onchange="changeSetting('timeDownSec', this.value)" /></td>
-									<td><input id="timeUpSec" type="number" onchange="changeSetting('timeUpSec', this.value)" /></td>
-									<td><input id="maxPowerAmp" type="number" onchange="changeSetting('maxPowerAmp', this.value)" /></td>
+									<td><input id="timeDownSec" type="number"
+											onchange="changeSetting('timeDownSec', this.value)" /></td>
+									<td><input id="timeUpSec" type="number"
+											onchange="changeSetting('timeUpSec', this.value)" /></td>
+									<td>
+										<table>
+											<tr>
+												<td>Max<input id="maxPowerAmp" type="number"
+														onchange="changeSetting('maxPowerAmp', this.value)" /></td>
+											</tr>
+											<tr>
+												<td>Min<input id="minPowerAmp" type="number"
+														onchange="changeSetting('minPowerAmp', this.value)" /></td>
+											</tr>
+										</table>
+									</td>
+									<td><input id="managementMode" type="number" min="0" max="1"
+											onchange="changeSetting('managementMode', this.value)" /></td>
 								</tr>
 								<tr>
 									<td><button onclick="changeSetting('btDown', 1)">Fermer</button></td>
@@ -62,8 +75,10 @@
 								<tr>
 									<td><button onclick="changeSetting('btDownLong', 1)">Fermer Long</button></td>
 									<td><button onclick="changeSetting('btUpLong', 1)">Ouvrir Long</button></td>
-									<td><button onclick="changeSetting('btStopDownLong', 1)">Stop Fermer Long</button></td>
-									<td><button onclick="changeSetting('btStopUpLong', 1)">Stop Ouvrir Long</button></td>
+									<td><button onclick="changeSetting('btStopDownLong', 1)">Stop Fermer Long</button>
+									</td>
+									<td><button onclick="changeSetting('btStopUpLong', 1)">Stop Ouvrir Long</button>
+									</td>
 								</tr>
 
 							</tbody>
@@ -80,67 +95,70 @@
 
 	<script>
 
-		
-			function saveConfiguration() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						update(this.responseText)
-					}
-				};
-	
-				xhttp.open("GET", "saveParam",true);
-				xhttp.send();	
-			}
-		
 
-			
-			function changeSetting(variable, val) {
-				document.getElementById("version").innerHTML = val;
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						//update(this.responseText)
-					}
-				};
-				document.getElementById("version").innerHTML = val;
-				xhttp.open("GET", "setParam?" + variable + "=" + String(val),
-						true);
-				xhttp.send();
+		function saveConfiguration() {
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					update(this.responseText)
+				}
 			};
 
-			function update(paramText,optionsText) {
-				var myObj = JSON.parse(paramText);
-				document.getElementById("builddate").innerHTML = myObj.module.build_date;
-				document.getElementById("version").innerHTML = myObj.module.version;
-				document.getElementById("modulename").innerHTML = myObj.module.nom;
-				document.getElementById("uptime").innerHTML = myObj.module.uptime;
-				
-				document.getElementById("maxPowerAmp").value = myObj.setting.maxPowerAmp;
-				document.getElementById("timeUpSec").value = myObj.setting.timeUpSec;
-				document.getElementById("timeDownSec").value = myObj.setting.timeDownSec;
-			}	
-
-			
+			xhttp.open("GET", "saveParam", true);
+			xhttp.send();
+		}
 
 
 
+		function changeSetting(variable, val) {
+			document.getElementById("version").innerHTML = val;
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					//update(this.responseText)
+				}
+			};
+			document.getElementById("version").innerHTML = val;
+			xhttp.open("GET", "setParam?" + variable + "=" + String(val),
+				true);
+			xhttp.send();
+		};
 
-			function init() {
-			
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						param = true;
-							update(xhttp.responseText)
-						}
-				};
+		function update(paramText, optionsText) {
+			var myObj = JSON.parse(paramText);
+			document.getElementById("builddate").innerHTML = myObj.module.build_date;
+			document.getElementById("version").innerHTML = myObj.module.version;
+			document.getElementById("modulename").innerHTML = myObj.module.nom;
+			document.getElementById("uptime").innerHTML = myObj.module.uptime;
 
-				xhttp.open("GET", "jsonParam", true);
-				xhttp.send();
-			}
-			window.onload = init;
-		</script>
+			document.getElementById("maxPowerAmp").value = myObj.setting.maxPowerAmp;
+			document.getElementById("timeUpSec").value = myObj.setting.timeUpSec;
+			document.getElementById("timeDownSec").value = myObj.setting.timeDownSec;
+			document.getElementById("managementMode").value = myObj.setting.managementMode;
+
+		}
+
+
+
+
+
+
+		function init() {
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					param = true;
+					update(xhttp.responseText)
+				}
+			};
+
+			xhttp.open("GET", "jsonParam", true);
+			xhttp.send();
+		}
+		window.onload = init;
+	</script>
 
 </body>
+
 </html>

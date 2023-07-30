@@ -43,6 +43,11 @@ extern "C"
 #include <baseHelper.h>
 #include <configHelper.h>
 
+#ifdef MCPOC_TELNET
+#include "RemoteDebug.h"
+extern RemoteDebug Debug;
+#endif
+
 class WifiHelper : public BaseHelper
 {
 public:

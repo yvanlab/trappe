@@ -1,64 +1,9 @@
-
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-	font-family: Arial;
-}
-
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-  border-spacing: 5px;
-  padding: 5px;
-  vertical-align: center;
-  
-}
-table#t01 {
- 
-  background-color: #f1f1c1;
-}
-
-/* Style the tab */
-.tab {
-	overflow: hidden;
-	border: 1px solid #ccc;
-	background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-	background-color: inherit;
-	float: left;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	padding: 14px 16px;
-	transition: 0.3s;
-	font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-	background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-	background-color: #ccc;
-}
-
-/* Style the tab content */
-.tabcontent {
-	display: none;
-	padding: 6px 12px;
-	border: 1px solid #ccc;
-	border-top: none;
-}
-</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <body>
 	<p>&nbsp;</p>
 	<h1 style="text-align: center;">
@@ -81,16 +26,10 @@ table#t01 {
 	</div>
 	<div style="text-align: center;">
 		<p>
-			<a href="/credential" target="_blank">Credentials</a>/
-			<a href="/reset" target="_blank">Wifi Reset</a>/<a
-				href="/restart" target="_blank">Restart</a>/<a
-				href="/firmware" target="_blank">Firmware</a>/<a
-				href="/config" target="_blank">Configuration</a>/<a
-				href="/prog" target="_blank">Programme</a>
-		</p>
+			<a href="/reset" target="_blank">Wifi Reset</a>/<a href="/restart" target="_blank">Restart</a>/<a
+				href="/firmware" target="_blank">Firmware</a>/<a href="/setup" target="_blank">Configuration</a>/<a </p>
 	</div>
-	<hr
-		style="margin-top: 51px; margin-left: auto; width: 177px; margin-right: auto;" />
+	<hr style="margin-top: 51px; margin-left: auto; width: 177px; margin-right: auto;" />
 	<div>
 		<h3 style="height: 3px;">Parametrage</h3>
 	</div>
@@ -105,13 +44,43 @@ table#t01 {
 								<tr>
 									<th>Duree descente (s)</th>
 									<th>Duree Monte (s)</th>
-									<th>Max Courant (A)</th>
+									<th>Courant (A)</th>
+									<th>Mode 0:Manu 1:Auto</th>
 								</tr>
 								<tr>
-									<td><input id="timeDownSec" type="number" onchange="changeSetting('timeDownSec', this.value)" /></td>
-									<td><input id="timeUpSec" type="number" onchange="changeSetting('timeUpSec', this.value)" /></td>
-									<td><input id="maxPowerAmp" type="number" onchange="changeSetting('maxPowerAmp', this.value)" /></td>
+									<td><input id="timeDownSec" type="number"
+											onchange="changeSetting('timeDownSec', this.value)" /></td>
+									<td><input id="timeUpSec" type="number"
+											onchange="changeSetting('timeUpSec', this.value)" /></td>
+									<td>
+										<table>
+											<tr>
+												<td>Max<input id="maxPowerAmp" type="number"
+														onchange="changeSetting('maxPowerAmp', this.value)" /></td>
+											</tr>
+											<tr>
+												<td>Min<input id="minPowerAmp" type="number"
+														onchange="changeSetting('minPowerAmp', this.value)" /></td>
+											</tr>
+										</table>
+									</td>
+									<td><input id="managementMode" type="number" min="0" max="1"
+											onchange="changeSetting('managementMode', this.value)" /></td>
 								</tr>
+								<tr>
+									<td><button onclick="changeSetting('btDown', 1)">Fermer</button></td>
+									<td><button onclick="changeSetting('btUp', 1)">Ouvrir</button></td>
+									<td><button onclick="changeSetting('btStop', 1)">Stop</button></td>
+								</tr>
+								<tr>
+									<td><button onclick="changeSetting('btDownLong', 1)">Fermer Long</button></td>
+									<td><button onclick="changeSetting('btUpLong', 1)">Ouvrir Long</button></td>
+									<td><button onclick="changeSetting('btStopDownLong', 1)">Stop Fermer Long</button>
+									</td>
+									<td><button onclick="changeSetting('btStopUpLong', 1)">Stop Ouvrir Long</button>
+									</td>
+								</tr>
+
 							</tbody>
 						</table>
 					</td>
@@ -126,62 +95,70 @@ table#t01 {
 
 	<script>
 
-		
-			function saveConfiguration() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						update(this.responseText)
-					}
-				};
-	
-				xhttp.open("GET", "saveParam",true);
-				xhttp.send();	
-			}
-		
 
-			
-			function changeSetting(variable, val) {
-				document.getElementById("version").innerHTML = val;
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						//update(this.responseText)
-					}
-				};
-				document.getElementById("version").innerHTML = val;
-				xhttp.open("GET", "setParam?" + variable + "=" + String(val),
-						true);
-				xhttp.send();
+		function saveConfiguration() {
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					update(this.responseText)
+				}
 			};
 
-			function update(paramText,optionsText) {
-				var myObj = JSON.parse(paramText);
-				document.getElementById("maxPowerAmp").value = myObj.maxPowerAmp;
-				document.getElementById("timeUpSec").value = myObj.timeUpSec;
-				document.getElementById("timeDownSec").value = myObj.timeDownSec;
-			}	
-
-			
+			xhttp.open("GET", "saveParam", true);
+			xhttp.send();
+		}
 
 
 
+		function changeSetting(variable, val) {
+			document.getElementById("version").innerHTML = val;
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					//update(this.responseText)
+				}
+			};
+			document.getElementById("version").innerHTML = val;
+			xhttp.open("GET", "setParam?" + variable + "=" + String(val),
+				true);
+			xhttp.send();
+		};
 
-			function init() {
-			
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						param = true;
-							update(xhttp.responseText)
-						}
-				};
+		function update(paramText, optionsText) {
+			var myObj = JSON.parse(paramText);
+			document.getElementById("builddate").innerHTML = myObj.module.build_date;
+			document.getElementById("version").innerHTML = myObj.module.version;
+			document.getElementById("modulename").innerHTML = myObj.module.nom;
+			document.getElementById("uptime").innerHTML = myObj.module.uptime;
 
-				xhttp.open("GET", "jsonParam", true);
-				xhttp.send();
-			}
-			window.onload = init;
-		</script>
+			document.getElementById("maxPowerAmp").value = myObj.setting.maxPowerAmp;
+			document.getElementById("timeUpSec").value = myObj.setting.timeUpSec;
+			document.getElementById("timeDownSec").value = myObj.setting.timeDownSec;
+			document.getElementById("managementMode").value = myObj.setting.managementMode;
+
+		}
+
+
+
+
+
+
+		function init() {
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					param = true;
+					update(xhttp.responseText)
+				}
+			};
+
+			xhttp.open("GET", "jsonParam", true);
+			xhttp.send();
+		}
+		window.onload = init;
+	</script>
 
 </body>
+
 </html>

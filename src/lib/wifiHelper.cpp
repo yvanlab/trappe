@@ -12,6 +12,8 @@
 #include "WProgram.h"
 #endif
 
+
+
 WifiHelper::WifiHelper(uint8_t pinLed, ConfigHelper *smManager) : BaseHelper(pinLed)
 {
   m_configuration = smManager;
@@ -46,15 +48,16 @@ wl_status_t WifiHelper::begin()
   }
   // MDNS.addService("http", "tcp", 80);
 
-#ifdef MCPOC_TELNET
-  MDNS.addService("telnet", "tcp", 23); // Telnet server RemoteDebug
-#endif
+
 #ifdef ESP8266
   WiFi.hostname(MODULE_NAME);
 #endif
 #ifdef ESP32
   WiFi.setHostname(m_configuration->m_moduleName.c_str());
 #endif
+
+
+
   return connection;
 }
 

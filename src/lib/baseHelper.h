@@ -14,7 +14,8 @@
 #endif
 
 #include "ylabconfig.h"
-
+#include "myDebug.h"
+/*
 #ifdef MCPOC_TELNET
 #include "RemoteDebug.h"
 extern RemoteDebug Debug;
@@ -28,6 +29,7 @@ extern RemoteDebug Debug;
 #else
 #define DBG_PORT Serial
 #endif
+
 
 #ifdef MCPOC_TEST
 static uint32_t previousTime = 0;
@@ -56,7 +58,7 @@ static uint32_t previousTime = 0;
 #define DEBUGLOG(...)
 #define DEBUGLOGF(...)
 #endif
-
+*/
 class BaseHelper
 {
 public:

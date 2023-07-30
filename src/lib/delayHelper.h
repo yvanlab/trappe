@@ -20,7 +20,8 @@ public:
 	};
 
 	void startDelay(uint32_t  delayMS) {
-		m_endMS = millis()+delayMS;
+		m_startMS 	= millis();
+		m_endMS 	= m_startMS+delayMS;
 	}
 
 	uint32_t getRemaining(){
@@ -28,10 +29,16 @@ public:
 		return m_endMS - millis();
 	}
 
+	uint32_t getElpased(){
+		if (isDone()) return m_endMS-m_startMS;
+		return millis()-m_startMS;
+	}
+
 	bool isDone() {return millis() > m_endMS;}
 
 protected:
 	uint32_t		m_endMS=0;
+	uint32_t		m_startMS=0;
 	
 
 };

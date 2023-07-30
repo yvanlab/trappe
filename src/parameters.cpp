@@ -32,7 +32,9 @@ String Parameters::toJson()
 		String ss;
 		ss = "\"timeUpSec\":\"" + String(m_timeUpSec) + "\",";
 		ss += "\"timeDownSec\":\"" + String(m_timeDownSec) + "\",";
-		ss += "\"maxPowerAmp\":\"" + String(m_maxPowerAmp) + "\"";
+		ss += "\"maxPowerAmp\":\"" + String(m_maxPowerAmp) + "\",";
+    ss += "\"minPowerAmp\":\"" + String(m_minPowerAmp) + "\",";
+    ss += "\"managementMode\":\"" + String(m_managementMode) + "\"";
 		return ss;
 	}
 
@@ -55,6 +57,8 @@ uint8_t Parameters::readData()
       m_timeUpSec = doc[F("timeUpSec")];
       m_timeDownSec = doc[F("timeDownSec")];
       m_maxPowerAmp = doc[F("maxPowerAmp")];
+      m_minPowerAmp = doc[F("minPowerAmp")];
+      m_managementMode = doc[F("managementMode")];
     } else {
       DEBUGLOGF("Config file SART READING [%s]",error.c_str());
     }
