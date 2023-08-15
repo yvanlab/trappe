@@ -62,6 +62,10 @@
 												<td>Min<input id="minPowerAmp" type="number"
 														onchange="changeSetting('minPowerAmp', this.value)" /></td>
 											</tr>
+											<tr>
+												<td>delay<input id="delayIntensity" type="number"
+														onchange="changeSetting('delayIntensity', this.value)" /></td>
+											</tr>
 										</table>
 									</td>
 									<td><input id="managementMode" type="number" min="0" max="1"
@@ -132,8 +136,11 @@
 			document.getElementById("uptime").innerHTML = myObj.module.uptime;
 
 			document.getElementById("maxPowerAmp").value = myObj.setting.maxPowerAmp;
+			document.getElementById("minPowerAmp").value = myObj.setting.minPowerAmp;
+			document.getElementById("delayIntensity").value = myObj.setting.delayIntensity;
 			document.getElementById("timeUpSec").value = myObj.setting.timeUpSec;
 			document.getElementById("timeDownSec").value = myObj.setting.timeDownSec;
+				
 			document.getElementById("managementMode").value = myObj.setting.managementMode;
 
 		}

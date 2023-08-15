@@ -36,7 +36,7 @@ extern QueueHandle_t         xQueueCommand;
 extern IntensityControl      intensityCtl;
 
 #include "actionneurDriver.h"
-extern ActionneurDriver      commandDriver;
+extern ActionneurDriver      commandDriverMain;
 #include "buttonControl.h"
 extern ButtonControl	       buttonCtl;
 

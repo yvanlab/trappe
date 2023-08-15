@@ -2,7 +2,8 @@
     "datetime": "Sun Mar 13 19:27:42 2022 ",
     "timeUpSec": "29",
     "timeDownSec": "29",
-    "maxPowerAmp": "12",
+    "maxPowerAmp": "30",
     "minPowerAmp": "0.5",
+    "delayIntensity" : "500",
     "managementMode" : "0"
 }

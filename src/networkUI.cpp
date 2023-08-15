@@ -42,7 +42,7 @@ String  NetworkUI::jsonParam() {
 	String tt("{\"module\":{");
 	tt += m_configuration->toJson() + "},"; 
 	tt += "\"setting\":{" + m_parameters->toJson() + "},";
-	tt += "\"actionneur\":{" + commandDriver.toJson() + "},";
+	tt += "\"actionneur\":{" + commandDriverMain.toJson() + "},";
 	tt += "\"buttons\":{" + buttonCtl.toJson() + "}";
 	tt += "}";	
 	_server->send(200, "text/html", tt);
@@ -116,6 +116,14 @@ void NetworkUI::setParameters()
 	else if ((str = _server->arg("maxPowerAmp")) != NULL)
 	{
 		m_parameters->m_maxPowerAmp = (uint8_t)atoi(str.c_str());;
+	} 
+	else if ((str = _server->arg("minPowerAmp")) != NULL)
+	{
+		m_parameters->m_minPowerAmp = (float)atof(str.c_str());;
+	} 
+	else if ((str = _server->arg("delayIntensity")) != NULL)
+	{
+		m_parameters->m_delayIntensity = (uint16_t)atoi(str.c_str());
 	} 
 	else if ((str = _server->arg("managementMode")) != NULL)
 	{

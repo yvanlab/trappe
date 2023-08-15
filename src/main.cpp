@@ -27,9 +27,10 @@ const uint8_t pinButtonDown = 14;//PIN_BUTTON_DOWN;
 const uint8_t pinUpSensorMain = 15;//PIN_BUTTON_DOWN;
 
 
-const uint8_t pinCommandeUpMain = 32;//PIN_COMMAND_UP;
-const uint8_t pinCommandeDownMain = 33;//PIN_COMMAND_DOWN;
-const uint8_t delayIntensity = 250; // ms
+const uint8_t pinCommandeUpDirection = 32;//PIN_COMMAND_UP;
+const uint8_t pinCommandeDownDirection = 33;//PIN_COMMAND_DOWN;
+const uint8_t pinCommandeTrappe = 25;//PIN_COMMAOuverure
+const uint8_t delayIntensity = 1000; // ms
 
 const uint8_t pinCommandeUpSecond = 25;//PIN_COMMAND_UP;
 const uint8_t pinCommandeDownSecond = 26;//PIN_COMMAND_DOWN;
@@ -59,8 +60,8 @@ ConfigHelper config(pinLed);
 Parameters param(pinLed);
 WifiHelper myWifi(pinLed, &config);
 IntensityControl intensityCtl(pinInyensity);
-ActionneurDriver commandDriverMain(pinCommandeDownMain, pinCommandeUpMain);
-//ActionneurDriver commandDriverSecond(pinCommandeDownSecond, pinCommandeUpSecond);
+ActionneurDriver commandDriverMain(pinCommandeDownDirection, pinCommandeUpDirection, pinCommandeTrappe);
+//ActionneurDriver commandDriverSecond(pinCommandeOuverured, pinCommandeUpSecond);
 ButtonControl buttonCtl(pinButtonDown, pinButtonUp);
 NetworkUI ui(pinLed, &param, &config);
 
@@ -198,7 +199,7 @@ void loop()
 	if (commandDriverMain.isActionUnderProgress())
 	{
 		intensityCtl.handle();
-		if (mtTimer.is1SFrequence())
+		if (mtTimer.is1SPeriod())
 		{
 		DEBUGLOGF("courant [%f], elapse[%d] Remaining[%d]\n", intensityCtl.m_fIntensityMeasure, commandDriverMain.getElapse() / 1000, commandDriverMain.getRemaining() / 1000);
 		}

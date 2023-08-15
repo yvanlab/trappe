@@ -66,6 +66,7 @@ public:
         m_fIntensityMeasure = 0;
         m_fCumulIntensityMeasure = 0;
         m_nbMeasure=0;
+        calibrate();
     }
 
     String getClassName() { return __PRETTY_FUNCTION__; }

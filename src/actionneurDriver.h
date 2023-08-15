@@ -26,8 +26,14 @@ public:
         STATUS_UNDETERMINED =6
     };
     
+    enum ACTIONNEUR_SELECTED
+    {
+        ACTIONEUR_TRAPPE = 0,
+        ACTIONEUR_HORIZONTAL = 1,
+        ACTIONEUR_TRAPPE_AND_HORIZONTAL = 2
+    };
 
-    ActionneurDriver(uint8_t pinDown, uint8_t pinUp);
+    ActionneurDriver(uint8_t pinDirectionDown, uint8_t pinDirectionUp,uint8_t pinCommandTrappe);
     void begin(uint8_t upSensor) ;
     void handle(float fIntensity, bool isUpSensorActivated);
     
@@ -46,24 +52,28 @@ public:
     String toJson() {
         String res;
         res =  "\"command\":\"" + String(m_command) + "\",";
-        res += "\"remaining_delay\":\"" + String(m_remainingDelay) + "\",";
+        res += "\"workigTime\":\"" + String(m_workigTime) + "\",";
         res += "\"status\":\"" + String(m_status) + "\"";
         return res;
     };
 
     String getClassName() { return __PRETTY_FUNCTION__ ;}
-    uint32_t calculateDelay(uint32_t delay);
+    //uint32_t calculateDelay(uint32_t delay);
     uint32_t getElapse();
     uint32_t getRemaining();
     
     
     ACTIONNEUR_COMMAND m_command = COMMAND_STOP;
-    ACTIONNEUR_STATUS m_status   = STATUS_OPENED;
-    uint8_t  m_pinCommandeUp;
-    uint8_t  m_pinCommandeDown;
-    DelayHelper m_delayHelper;
-    uint32_t m_remainingDelay = 0;
-    uint32_t m_elapsedDelay = 0;
+    ACTIONNEUR_STATUS m_status   = STATUS_CLOSED;
+    ACTIONNEUR_SELECTED m_actioneur = ACTIONEUR_HORIZONTAL;
+
+    uint8_t  m_pinCommandeDirectionUp;
+    uint8_t  m_pinCommandeDirectionDown;
+    uint8_t  m_pinCommandTrappe;
+    
+    //DelayHelper m_delayHelper;
+    //uint32_t m_remainingDelay = 0;
+    //uint32_t m_elapsedDelay = 0;
     
     uint32_t m_workigStartTime = 0;
     uint32_t m_workigTime = 0;

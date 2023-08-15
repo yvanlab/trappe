@@ -41,6 +41,7 @@ class Parameters
 	uint8_t m_timeUpSec   = 60;
 	uint8_t m_timeDownSec = 60;
 	uint8_t m_maxPowerAmp = 10;
+  uint16_t m_delayIntensity = 500;
   float   m_minPowerAmp = 1.5;
   
   MANAGEMENT_MODE m_managementMode = MODE_BUTTON;
