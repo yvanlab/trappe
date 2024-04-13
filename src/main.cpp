@@ -30,21 +30,85 @@ const uint8_t pinUpSensorMain = 15;//PIN_BUTTON_DOWN;
 const uint8_t pinCommandeUpDirection = 32;//PIN_COMMAND_UP;
 const uint8_t pinCommandeDownDirection = 33;//PIN_COMMAND_DOWN;
 const uint8_t pinCommandeTrappe = 25;//PIN_COMMAOuverure
-const uint8_t delayIntensity = 1000; // ms
+//const uint8_t delayIntensity = 1000; // ms
 
 const uint8_t pinCommandeUpSecond = 25;//PIN_COMMAND_UP;
 const uint8_t pinCommandeDownSecond = 26;//PIN_COMMAND_DOWN;
 
 using namespace MyDebug;
 
+
+ConfigHelper config(pinLed);
+Parameters param(pinLed);
+WifiHelper myWifi(pinLed, &config);
+IntensityControl intensityCtl(pinInyensity);
+ActionneurDriver commandDriverMain(pinCommandeDownDirection, pinCommandeUpDirection, pinCommandeTrappe);
+//ActionneurDriver commandDriverSecond(pinCommandeOuverured, pinCommandeUpSecond);
+ButtonControl buttonCtl(pinButtonDown, pinButtonUp);
+NetworkUI ui(pinLed, &param, &config);
+
+
 #ifdef MCPOC_TELNET // Not in PRODUCTION
+
+void status() {
+	intensityCtl.clean();
+	for (uint8_t i=0; i<11 ;i++ )
+			intensityCtl.handle();
+		DEBUGLOGF("m_actioneur [%d], m_command [%d]satus[%d], Courant[%f][%d] \n",commandDriverMain.m_actioneur,commandDriverMain.m_command, commandDriverMain.m_status, intensityCtl.m_fIntensityMeasure,analogRead(pinInyensity));
+
+}
+
 void processCmdRemoteDebug()
 {
 	String lastCmd = MyDebug::m_debugTelnet.getLastCommand();
-	if (lastCmd == "l1")
+	if (lastCmd == "st")
 	{
-		;
+		status();
+	} else 	if (lastCmd == "ho")
+	{
+		DEBUGLOG("HO - horizontal OPEN");
+		digitalWrite(pinCommandeUpDirection, true);
+    	digitalWrite(pinCommandeDownDirection, false);
+		status();
+	}else 	if (lastCmd == "hc")
+	{
+		DEBUGLOG("HC - horizontal CLOSE");
+		digitalWrite(pinCommandeUpDirection, false);
+    	digitalWrite(pinCommandeDownDirection, true);
+		status();
+	}else if (lastCmd == "hn")
+	{
+		DEBUGLOG("HN - horizontal DEACTIVE");
+		digitalWrite(pinCommandeUpDirection, false);
+    	digitalWrite(pinCommandeDownDirection, false);
+		status();
 	}
+	else if (lastCmd == "ta")
+	{
+		DEBUGLOG("TA - Trappe ACTIVE");
+		digitalWrite(pinCommandeTrappe, true);
+		status();
+    }else 	if (lastCmd == "td")
+	{
+		DEBUGLOG("TA - Trappe deACTIVE");
+		digitalWrite(pinCommandeTrappe, false);
+		status();
+    }
+//
+	else if (lastCmd == "fc")
+	{
+		DEBUGLOG("FC - force COSED status");
+ 		commandDriverMain.m_status = ActionneurDriver::STATUS_CLOSED;    
+    	commandDriverMain.m_actioneur = ActionneurDriver::ACTIONEUR_HORIZONTAL;
+		status();
+    }else 	if (lastCmd == "fo")
+	{
+		DEBUGLOG("FO - force OPENED status");
+ 		commandDriverMain.m_status = ActionneurDriver::STATUS_OPENED;    
+    	commandDriverMain.m_actioneur = ActionneurDriver::ACTIONEUR_TRAPPE_AND_HORIZONTAL;
+		status();
+    }
+
 	else if (lastCmd == "restart")
 	{
 		ESP.restart();
@@ -56,14 +120,6 @@ void processCmdRemoteDebug()
 }
 #endif
 
-ConfigHelper config(pinLed);
-Parameters param(pinLed);
-WifiHelper myWifi(pinLed, &config);
-IntensityControl intensityCtl(pinInyensity);
-ActionneurDriver commandDriverMain(pinCommandeDownDirection, pinCommandeUpDirection, pinCommandeTrappe);
-//ActionneurDriver commandDriverSecond(pinCommandeOuverured, pinCommandeUpSecond);
-ButtonControl buttonCtl(pinButtonDown, pinButtonUp);
-NetworkUI ui(pinLed, &param, &config);
 
 void setup()
 {
@@ -76,7 +132,11 @@ void setup()
 	MyDebug::m_debugTelnet.showProfiler(true); // Profiler (Good to measure times, to optimize codes)
 
 	MyDebug::m_debugTelnet.showColors(true); // Color
-	String helpCmd = "??\n\rrestart\n\rreset\n\r";
+	String helpCmd = "??\nrestart\nreset\n";
+	helpCmd += "HO - horizontal OPEN\nHC - horizontal CLOSE\nHN - horizontal NEUTRE";
+	helpCmd += "TA - Trappe ACTIVE\nTD - Trappe deACTIVE\n";
+	helpCmd += "FC - FORCE CLOSED STATUS\nFORCE OPENED STATUS\n";
+
 	MyDebug::m_debugTelnet.setHelpProjectsCmds(helpCmd);
 	MyDebug::m_debugTelnet.setCallBackProjectCmds(&processCmdRemoteDebug);
 #endif
@@ -149,12 +209,12 @@ void manageTimeBased(ButtonControl::BUTTON_GLOBAL_STATUS btAction)
 
 void manageButtonBased(ButtonControl::BUTTON_GLOBAL_STATUS btAction)
 {
-	if (/*(btAction == ButtonControl::BUTTON_CLOSE_PRESSED) || */(btAction == ButtonControl::BUTTON_CLOSE_PRESSED_LONG))
+	if ((btAction == ButtonControl::BUTTON_CLOSE_PRESSED_LONG))
 	{
 			intensityCtl.clean();
 			commandDriverMain.startActioneurClose();
 	}
-	else if (/*(btAction == ButtonControl::BUTTON_OPEN_PRESSED) ||*/ (btAction == ButtonControl::BUTTON_OPEN_PRESSED_LONG))
+	else if ( (btAction == ButtonControl::BUTTON_OPEN_PRESSED_LONG))
 	{
 			intensityCtl.clean();
 			commandDriverMain.startActioneurOpen();
@@ -173,7 +233,7 @@ void manageButtonBased(ButtonControl::BUTTON_GLOBAL_STATUS btAction)
 
 // DelayHelper m_tempoLongMode;
 ButtonControl::BUTTON_GLOBAL_STATUS btAction;
-ButtonControl::BUTTON_GLOBAL_STATUS btPreviousAction;
+//ButtonControl::BUTTON_GLOBAL_STATUS btPreviousAction;
 void loop()
 {
 
@@ -181,13 +241,6 @@ void loop()
 					  &(btAction),
 					  (TickType_t)10) == pdPASS)
 	{
-		/*if (btAction == ButtonControl::BUTTON_CLOSE_PRESSED_LONG || btAction == ButtonControl::BUTTON_OPEN_PRESSED_LONG ) {
-		   m_tempoLongMode.startDelay(120*1000);//2mn
-
-		}*/
-
-		// if (buttonCtl.isActionUnderProgress()) {
-
 		if (param.m_managementMode == MODE_TIME_BASED)
 			manageTimeBased(btAction);
 		else if (param.m_managementMode == MODE_BUTTON)
@@ -201,11 +254,11 @@ void loop()
 		intensityCtl.handle();
 		if (mtTimer.is1SPeriod())
 		{
-		DEBUGLOGF("courant [%f], elapse[%d] Remaining[%d]\n", intensityCtl.m_fIntensityMeasure, commandDriverMain.getElapse() / 1000, commandDriverMain.getRemaining() / 1000);
+		DEBUGLOGF("courant [%f], cc[%d], elapse[%d] \n", intensityCtl.m_fIntensityMeasure,  analogRead(pinInyensity),  commandDriverMain.getElapse() / 1000);
 		}
 	}
 	commandDriverMain.handle(intensityCtl.m_fIntensityMeasure, digitalRead(pinUpSensorMain));
-	//commandDriverSecond.handle(intensityCtl.m_fIntensityMeasure, digitalRead(pinUpSensorMain),);
+
 	buttonCtl.handle();
 	ui.handleServer();
 	MyDebug::handle();

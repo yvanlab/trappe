@@ -11,9 +11,10 @@ public:
     enum BUTTON_STATUS
     {
         BUTTON_NOT_PRESSED = 0,
-        BUTTON_PRESSED = 1,
-        BUTTON_PRESSED_SHORT = 2,
-        BUTTON_PRESSED_LONG = 3
+        BUTTON_PRE_PRESSED = 1,
+        BUTTON_PRESSED = 2,
+        BUTTON_PRESSED_SHORT = 3,
+        BUTTON_PRESSED_LONG = 4
     };
 
     MyButton(uint8_t _function, uint8_t _pin, String _name)
@@ -35,6 +36,7 @@ public:
     static String getStatusString(BUTTON_STATUS btStatus) {
         switch(btStatus) {
             case BUTTON_NOT_PRESSED : return "Not pressed";
+            case BUTTON_PRE_PRESSED : return "PRE Pressed";
             case BUTTON_PRESSED : return "Pressed";
             case BUTTON_PRESSED_SHORT : return "Pressed short";
             case BUTTON_PRESSED_LONG : return "Pressed long";

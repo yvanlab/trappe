@@ -42,14 +42,18 @@ void IRAM_ATTR ButtonControl::buttonInterrupt()
             // DEBUGLOGF("BUTTON [%d][%d][%d]\n",m_button[i]->function,m_button[i]->pin, digitalRead(m_button[i]->pin) );
             if (digitalRead(m_button[i]->pin))
             {
-                if (m_button[i]->previousStatus == MyButton::BUTTON_PRESSED)
+                if (m_button[i]->previousStatus == MyButton::BUTTON_PRE_PRESSED) {
+                    m_button[i]->currentStatus = MyButton::BUTTON_PRESSED;
+                }else if (m_button[i]->previousStatus == MyButton::BUTTON_PRESSED)
                     m_button[i]->currentStatus = MyButton::BUTTON_PRESSED_LONG;
                 else if (m_button[i]->previousStatus == MyButton::BUTTON_NOT_PRESSED)
-                    m_button[i]->currentStatus = MyButton::BUTTON_PRESSED;
+                    m_button[i]->currentStatus = MyButton::BUTTON_PRE_PRESSED;
             }
             else
             {
-                if (m_button[i]->previousStatus == MyButton::BUTTON_PRESSED)
+                if (m_button[i]->previousStatus == MyButton::BUTTON_PRE_PRESSED) {
+                    m_button[i]->currentStatus = MyButton::BUTTON_NOT_PRESSED;
+                } else if (m_button[i]->previousStatus == MyButton::BUTTON_PRESSED)
                     m_button[i]->currentStatus = MyButton::BUTTON_PRESSED_SHORT;
                 else
                     m_button[i]->currentStatus = MyButton::BUTTON_NOT_PRESSED;
@@ -57,9 +61,15 @@ void IRAM_ATTR ButtonControl::buttonInterrupt()
             if (m_button[i]->previousStatus != m_button[i]->currentStatus)
             {
                 DEBUGLOGF("BUTTON [%s][%d] current[%s] previous[%s]\n", m_button[i]->name, m_button[i]->pin, MyButton::getStatusString(m_button[i]->currentStatus), MyButton::getStatusString(m_button[i]->previousStatus));
-                // m_button[i]->previousStatus = m_button[i]->currentStatus;
-                bStatusChanged = true;
-                m_button[i]->m_delayHelper.startDelay(500);
+                
+                if (m_button[i]->currentStatus == MyButton::BUTTON_PRE_PRESSED) {
+                    m_button[i]->m_delayHelper.startDelay(100); //delay to avoid unstable/parasite pression    
+                    m_button[i]->previousStatus = m_button[i]->currentStatus;
+                    bStatusChanged = false;
+                } else {
+                    m_button[i]->m_delayHelper.startDelay(500);//delay to for long pression  
+                    bStatusChanged = true;
+                }
             };
         }
     }

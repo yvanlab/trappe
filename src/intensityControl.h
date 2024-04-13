@@ -63,10 +63,15 @@ public:
     boolean isOverTreshold() { return m_bIsOverTreshold; };
 
     void clean() {
+        //DEBUGLOGF("clean before-courant[%f]-calibration[%d]\n",m_fIntensityMeasure,zero);
+        
         m_fIntensityMeasure = 0;
         m_fCumulIntensityMeasure = 0;
         m_nbMeasure=0;
-        calibrate();
+        m_fIntensityMeasure = 0;
+        
+        //int res = calibrate();
+        DEBUGLOGF("clean AFTER -courant[%f]-calibration[%d]\n",m_fIntensityMeasure);
     }
 
     String getClassName() { return __PRETTY_FUNCTION__; }
