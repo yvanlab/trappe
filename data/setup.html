@@ -45,6 +45,10 @@
 			<legend>Parametre Module</legend>
 			<ol>
 				<li>
+					<label for="dynamicIP">Dynamic IP</label>
+					<input type="checkbox" id="dynamicIP" name="dynamicIP" value = "active">
+				</li>
+				<li>
 					<label for=routerIP >router IP</label>
 					<input name=routerIP type=text>
 				</li>
@@ -89,6 +93,8 @@ function update(responseText) {
 				var myObj = JSON.parse(responseText);
 				document.getElementsByName("ssid")[0].value = myObj.ssid;
 				document.getElementsByName("password")[0].value = myObj.password;
+				//if (document.getElementsByName("DynamicIP")[0].value = myObj.DynamicIP == "active") 
+				document.getElementsByName("dynamicIP")[0].checked = myObj.dynamicIP==1;
 				document.getElementsByName("routerIP")[0].value = myObj.routerIP;
 				document.getElementsByName("IP")[0].value = myObj.IP;
 

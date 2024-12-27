@@ -50,6 +50,7 @@ String ConfigHelper::toJson()
   ss += "\"build_date\":\"" + String(__DATE__ " " __TIME__) + "\",";
   ss += "\"ssid\":\"" + m_ssid + "\",";
   ss += "\"password\":\"" + m_password + "\",";
+  ss += "\"dynamicIP\":\"" + String(m_dynamicIP) + "\",";
   ss += "\"routerIP\":\"" + m_routerIP.toString() + "\",";
   ss += "\"IP\":\"" + m_IP.toString() + "\",";
   ss += "\"moduleName\":\"" + m_moduleName + "\",";
@@ -81,8 +82,9 @@ uint8_t ConfigHelper::readData()
     {
       m_version = doc[F("version")];
       m_ssid = doc[F("ssid")].as<String>();
-      // m_routerIP    = doc[F("routerIP")].as<IPAddress>();
-      // m_IP          = doc[F("IP")].as<IPAddress>();
+      m_dynamicIP = doc[F("dynamicIP")].as<int8_t>();
+      m_routerIP.fromString(doc[F("routerIP")].as<String>());
+      m_IP.fromString(doc[F("IP")].as<String>());
       m_moduleName = doc[F("moduleName")].as<String>();
       m_mdns = doc[F("mdns")].as<String>();
       m_mdnsAP = doc[F("mdnsAP")].as<String>();
@@ -111,6 +113,7 @@ uint8_t ConfigHelper::writeData()
 
   String ss = "{\"datetime\":\"" + String(ctime(&tt)) + "\",";
   ss += toJson() + "}";
+  DEBUGLOGF("set up : %s \n",ss.c_str());
   File cfgFile = SPIFFS.open("/config.json", FILE_WRITE);
   if (cfgFile.print(ss) == ss.length())
   {

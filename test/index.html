@@ -44,7 +44,7 @@
 								<tr>
 									<th>Duree descente (s)</th>
 									<th>Duree Monte (s)</th>
-									<th>Courant (A)</th>
+									<th>General</th>
 									<th>Mode 0:Manu 1:Auto</th>
 								</tr>
 								<tr>
@@ -54,14 +54,7 @@
 											onchange="changeSetting('timeUpSec', this.value)" /></td>
 									<td>
 										<table>
-											<tr>
-												<td>Max<input id="maxPowerAmp" type="number"
-														onchange="changeSetting('maxPowerAmp', this.value)" /></td>
-											</tr>
-											<tr>
-												<td>Min<input id="minPowerAmp" type="number"
-														onchange="changeSetting('minPowerAmp', this.value)" /></td>
-											</tr>
+											
 										</table>
 									</td>
 									<td><input id="managementMode" type="number" min="0" max="1"
@@ -80,7 +73,35 @@
 									<td><button onclick="changeSetting('btStopUpLong', 1)">Stop Ouvrir Long</button>
 									</td>
 								</tr>
-
+								<tr>
+									<td>Max Amp Fermeture</td>
+									<td>Max Amp Ouverture</td>
+									<td>Amp Minimum/Utilise</td>
+									
+								</tr>
+								<tr>
+									<td>Hori<input style="width: 7em" id="maxAmpDownHori" type="number"
+										onchange="changeSetting('maxAmpDownHori', this.value)" /></td>
+										<td>Hori<input style="width: 7em" id="maxAmpUpHori" type="number"
+											onchange="changeSetting('maxAmpUpHori', this.value)" /></td>
+											
+												<td>Used<input style="width: 7em" id="maxPowerAmp" type="number"
+														onchange="changeSetting('maxPowerAmp', this.value)" /></td>
+														<td>delay<input style="width: 7em" id="delayIntensity" type="number"
+															onchange="changeSetting('delayIntensity', this.value)" /></td>			
+											
+												
+											
+								</tr>
+								<tr>
+									<td>Vert<input style="width: 7em" id="maxAmpDownVert" type="number"
+										onchange="changeSetting('maxAmpDownVert', this.value)" /></td>
+										<td>Vert<input style="width: 7em" id="maxAmpUpVert" type="number"
+											onchange="changeSetting('maxAmpUpVert', this.value)" /></td>
+											<td>Min<input style="width: 7em" id="minPowerAmp" type="number"
+												onchange="changeSetting('minPowerAmp', this.value)" /></td>
+									
+								</tr>
 							</tbody>
 						</table>
 					</td>
@@ -132,6 +153,12 @@
 			document.getElementById("uptime").innerHTML = myObj.module.uptime;
 
 			document.getElementById("maxPowerAmp").value = myObj.setting.maxPowerAmp;
+			document.getElementById("delayIntensity").value = myObj.setting.delayIntensity;
+			document.getElementById("maxAmpDownHori").value = myObj.setting.maxAmpDownHori;
+			document.getElementById("maxAmpDownVert").value = myObj.setting.maxAmpDownVert;
+			document.getElementById("maxAmpUpHori").value = myObj.setting.maxAmpUpHori;
+			document.getElementById("maxAmpUpVert").value = myObj.setting.maxAmpUpVert;
+			
 			document.getElementById("timeUpSec").value = myObj.setting.timeUpSec;
 			document.getElementById("timeDownSec").value = myObj.setting.timeDownSec;
 			document.getElementById("managementMode").value = myObj.setting.managementMode;

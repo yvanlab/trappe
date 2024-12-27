@@ -28,7 +28,7 @@ class ConfigHelper : public BaseHelper
     String m_mdns;
     String m_mdnsAP;
 
-
+    boolean m_dynamicIP = false;
     IPAddress m_routerIP;
     String m_privateKey;
     String m_publicKey;

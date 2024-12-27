@@ -112,10 +112,26 @@ void NetworkUI::setParameters()
 	{
 		m_parameters->m_timeDownSec = (uint8_t)atoi(str.c_str());;
 	}
-	
+	//Max Power
 	else if ((str = _server->arg("maxPowerAmp")) != NULL)
 	{
-		m_parameters->m_maxPowerAmp = (uint8_t)atoi(str.c_str());;
+		m_parameters->m_maxPowerAmp = (float)atof(str.c_str());;
+	} 
+	else if ((str = _server->arg("maxAmpDownHori")) != NULL)
+	{
+		m_parameters->m_maxAmpDownHori = (float)atof(str.c_str());;
+	} 
+	else if ((str = _server->arg("maxAmpDownVert")) != NULL)
+	{
+		m_parameters->m_maxAmpDownVert = (float)atof(str.c_str());;
+	} 
+	else if ((str = _server->arg("maxAmpUpHori")) != NULL)
+	{
+		m_parameters->m_maxAmpUpHori = (float)atof(str.c_str());;
+	} 
+	else if ((str = _server->arg("maxAmpUpVert")) != NULL)
+	{
+		m_parameters->m_maxAmpUpVert = (float)atof(str.c_str());;
 	} 
 	else if ((str = _server->arg("minPowerAmp")) != NULL)
 	{

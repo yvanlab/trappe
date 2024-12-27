@@ -55,12 +55,15 @@ public:
             {
                 m_bIsOverTreshold = false;
             }
+            if ((m_fIntensityMeasure > m_fMaxIntensityMeasure) && m_delayMaxIntensity.isDone() ) {
+                m_fMaxIntensityMeasure = m_fIntensityMeasure; 
+            }
         }
         // m_bIsOverTreshold = (m_fIntensityMeasure>param.m_maxPowerAmp) ? true : false;
         //m_delayHelper.startDelay(m_delay_ms);
         //}
     };
-    boolean isOverTreshold() { return m_bIsOverTreshold; };
+    //boolean isOverTreshold() { return m_bIsOverTreshold; };
 
     void clean() {
         //DEBUGLOGF("clean before-courant[%f]-calibration[%d]\n",m_fIntensityMeasure,zero);
@@ -69,7 +72,8 @@ public:
         m_fCumulIntensityMeasure = 0;
         m_nbMeasure=0;
         m_fIntensityMeasure = 0;
-        
+        m_fMaxIntensityMeasure = 0;
+        m_delayMaxIntensity.startDelay(param.m_delayIntensity);
         //int res = calibrate();
         DEBUGLOGF("clean AFTER -courant[%f]-calibration[%d]\n",m_fIntensityMeasure);
     }
@@ -81,8 +85,12 @@ public:
     //uint32_t m_delay_ms;
     // DelayHelper m_delayHelper;
     float m_fIntensityMeasure = 0;
+    float m_fMaxIntensityMeasure = 0;
+    
     float m_fCumulIntensityMeasure = 0;
     uint8_t m_nbMeasure=0;
+
+    DelayHelper m_delayMaxIntensity;
 };
 
 #endif

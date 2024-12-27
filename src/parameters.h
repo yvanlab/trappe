@@ -40,7 +40,14 @@ class Parameters
 
 	uint8_t m_timeUpSec   = 60;
 	uint8_t m_timeDownSec = 60;
-	uint8_t m_maxPowerAmp = 10;
+	float m_maxPowerAmp = 5.0;
+  
+  float m_maxAmpDownHori = 2.0;
+  float m_maxAmpDownVert = 2.0;
+  float m_maxAmpUpHori = 2.0;
+  float m_maxAmpUpVert = 2.0;
+
+
   uint16_t m_delayIntensity = 500;
   float   m_minPowerAmp = 1.5;
   

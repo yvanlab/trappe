@@ -39,6 +39,7 @@ wl_status_t UiHelper::begin()
     _server->on("/dir", std::bind(&UiHelper::dir, this));
     _server->on("/open", std::bind(&UiHelper::open, this));
     _server->on("/help", std::bind(&UiHelper::help, this));
+    _server->on("/jquery.min.js", std::bind(&UiHelper::jqueryminjs, this));
 #ifdef ESP8266
     _httpUpdater.setup(_server, ((const char *)"/firmware"), MODULE_UPDATE_LOGIN, MODULE_UPDATE_PASS);
 #else
@@ -62,6 +63,12 @@ void UiHelper::cssStyle()
 {
     // digitalWrite ( pinLed, LOW );
     loadFromSpiffs("/style.css");
+}
+
+void UiHelper::jqueryminjs()
+{
+    // digitalWrite ( pinLed, LOW );
+    loadFromSpiffs("/jquery.min.js");
 }
 
 
@@ -106,7 +113,27 @@ void UiHelper::open()
 
 void UiHelper::help()
 {
-    loadFromSpiffs("/help.html");
+    //load from spiff and replace string by real ip address
+    File file = SPIFFS.open("/help.html", "r");
+    if (!file) {
+        Serial.println("Failed to open file");
+        return;
+    }
+
+    String content = file.readString();
+    file.close();
+
+    // Replace the placeholder with the actual IP address of the router
+    String ipStr;
+        
+    if (WiFi.status() == WL_CONNECTED) {
+        ipStr=WiFi.localIP().toString();
+    } else {
+        ipStr=WiFi.softAPIP().toString();
+    }
+    content.replace("%ip", ipStr);
+    _server->send(200, "text/html", content);
+    //loadFromSpiffs("/help.html");
 }
 
 
@@ -132,6 +159,17 @@ void IRAM_ATTR UiHelper::setSetup()
         {
             m_configuration->m_ssid = str;
         }
+
+        if ((str = _server->arg("routerIP")) != NULL)
+        {
+            m_configuration->m_routerIP.fromString(str);
+        }
+        if ((str = _server->arg("IP")) != NULL)
+        {
+            m_configuration->m_IP.fromString(str);
+        }
+ 
+        m_configuration->m_dynamicIP = _server->arg("dynamicIP") != NULL;
 
         if ((str = _server->arg("pass")) != NULL)
         {
@@ -166,7 +204,7 @@ void IRAM_ATTR UiHelper::setSetup()
     void UiHelper::wifiReset()
     {
         _server->send(200, "text/html", "reseting...");
-        WiFi.disconnect();
+        WiFi.disconnect(true, true);
         restartESP();
     }
 
@@ -230,13 +268,20 @@ void IRAM_ATTR UiHelper::setSetup()
 
 #ifdef ESP32
 
-    const char HTML_FIRMWARE[] PROGMEM =
-        "<style>#file-input,input{width:100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}input{background:#f1f1f1;border:0;padding:0 15px}body{background:#3498db;font-family:sans-serif;font-size:14px;color:#777}#file-input{padding:0;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer}#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#3498db;width:0;height:10px}form{background:#fff;max-width:258px;margin:75px auto;padding:30px;border-radius:5px;text-align:center}.btn{background:#3498db;color:#fff;cursor:pointer}</style>\n<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>\n<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>\n<input type='file' name='update' id='file' onchange='sub(this)' style=display:none>\n<label id='file-input' for='file'> Choose file...</label>\n<input type='submit' class=btn value='Update'><br><br>\n<div id='prg'></div><br>\n<div id='prgbar'>\n<div id='bar'></div>\n</div><br>\n</form>\n<script>function sub(a){var b=a.value.split(\"\\\\\");document.getElementById(\"file-input\").innerHTML=\"   \"+b[b.length-1]}$(\"form\").submit(function(c){c.preventDefault();var a=$(\"#upload_form\")[0];var b=new FormData(a);$.ajax({url:\"/update\",type:\"POST\",data:b,contentType:false,processData:false,xhr:function(){var d=new window.XMLHttpRequest();d.upload.addEventListener(\"progress\",function(e){if(e.lengthComputable){var f=e.loaded/e.total;$(\"#prg\").html(\"progress: \"+Math.round(f*100)+\"%\");$(\"#bar\").css(\"width\",Math.round(f*100)+\"%\")}},false);return d},success:function(f,e){console.log(\"success!\")},error:function(e,d,f){}})});</script>";
+//    const char HTML_FIRMWARE[] PROGMEM =
+//        "<style>#file-input,input{width:100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}input{background:#f1f1f1;border:0;padding:0 15px}body{background:#3498db;font-family:sans-serif;font-size:14px;color:#777}#file-input{padding:0;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer}#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#3498db;width:0;height:10px}form{background:#fff;max-width:258px;margin:75px auto;padding:30px;border-radius:5px;text-align:center}.btn{background:#3498db;color:#fff;cursor:pointer}</style>\n<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>\n<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>\n<input type='file' name='update' id='file' onchange='sub(this)' style=display:none>\n<label id='file-input' for='file'> Choose file...</label>\n<input type='submit' class=btn value='Update'><br><br>\n<div id='prg'></div><br>\n<div id='prgbar'>\n<div id='bar'></div>\n</div><br>\n</form>\n<script>function sub(a){var b=a.value.split(\"\\\\\");document.getElementById(\"file-input\").innerHTML=\"   \"+b[b.length-1]}$(\"form\").submit(function(c){c.preventDefault();var a=$(\"#upload_form\")[0];var b=new FormData(a);$.ajax({url:\"/update\",type:\"POST\",data:b,contentType:false,processData:false,xhr:function(){var d=new window.XMLHttpRequest();d.upload.addEventListener(\"progress\",function(e){if(e.lengthComputable){var f=e.loaded/e.total;$(\"#prg\").html(\"progress: \"+Math.round(f*100)+\"%\");$(\"#bar\").css(\"width\",Math.round(f*100)+\"%\")}},false);return d},success:function(f,e){console.log(\"success!\")},error:function(e,d,f){}})});</script>";
+
+/*const char HTML_FIRMWARE[] PROGMEM =
+        "<style>#file-input,input{width:100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}input{background:#f1f1f1;border:0;padding:0 15px}body{background:#3498db;font-family:sans-serif;font-size:14px;color:#777}#file-input{padding:0;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer}#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#3498db;width:0;height:10px}form{background:#fff;max-width:258px;margin:75px auto;padding:30px;border-radius:5px;text-align:center}.btn{background:#3498db;color:#fff;cursor:pointer}</style>\n<script src='jquery.min.js'></script>\n<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>\n<input type='file' name='update' id='file' onchange='sub(this)' style=display:none>\n<label id='file-input' for='file'> Choose file...</label>\n<input type='submit' class=btn value='Update'><br><br>\n<div id='prg'></div><br>\n<div id='prgbar'>\n<div id='bar'></div>\n</div><br>\n</form>\n<script>function sub(a){var b=a.value.split(\"\\\\\");document.getElementById(\"file-input\").innerHTML=\"   \"+b[b.length-1]}$(\"form\").submit(function(c){c.preventDefault();var a=$(\"#upload_form\")[0];var b=new FormData(a);$.ajax({url:\"/update\",type:\"POST\",data:b,contentType:false,processData:false,xhr:function(){var d=new window.XMLHttpRequest();d.upload.addEventListener(\"progress\",function(e){if(e.lengthComputable){var f=e.loaded/e.total;$(\"#prg\").html(\"progress: \"+Math.round(f*100)+\"%\");$(\"#bar\").css(\"width\",Math.round(f*100)+\"%\")}},false);return d},success:function(f,e){console.log(\"success!\")},error:function(e,d,f){}})});</script>";
+*/
 
     void UiHelper::httpUpdaterPage()
     {
-        _server->send_P(200, "text/html", HTML_FIRMWARE);
-        _server->send(200, "text/html", "");
+        DEBUGLOG("Load Firmware page");
+        //Serial.println("Load Firmware page");
+        loadFromSpiffs("/firmware.html");
+        //_server->send_P(200, "text/html", HTML_FIRMWARE);
+        //_server->send(200, "text/html", "");
     }
 
     void UiHelper::initHttpUpdater()
@@ -248,15 +293,18 @@ void IRAM_ATTR UiHelper::setSetup()
         _server->on(
             "/update", HTTP_POST, [&]()
             {
+                //Serial.printf("Update: %s\n", Update.errorString());
                 _server->sendHeader("Connection", "close");
                 _server->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
                 ESP.restart(); },
             [&]()
             {
                 HTTPUpload &upload = _server->upload();
+                /*Serial.printf("upload.status: %d\n", upload.status);
+                Serial.printf("upload.status: %s\n", Update.errorString());*/
                 if (upload.status == UPLOAD_FILE_START)
                 {
-                    // Serial.printf("Update: %s\n", upload.filename.c_str());
+                    //Serial.printf("Update: %s\n", upload.filename.c_str());
                     int command = U_FLASH;
                     if (upload.filename == "spiffs.bin")
                     {
@@ -270,6 +318,7 @@ void IRAM_ATTR UiHelper::setSetup()
                 }
                 else if (upload.status == UPLOAD_FILE_WRITE)
                 {
+                    //Serial.println("flashing firmware to ESP");
                     /* flashing firmware to ESP*/
                     if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
                     {
@@ -281,7 +330,7 @@ void IRAM_ATTR UiHelper::setSetup()
                     if (Update.end(true))
                     { // true to set the size to the current progress
                         DEBUGLOGF("Update Success: %u\nRebooting...\n", upload.totalSize);
-                        // Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+                        //Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
                     }
                     else
                     {

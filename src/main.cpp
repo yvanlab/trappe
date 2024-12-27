@@ -133,9 +133,10 @@ void setup()
 
 	MyDebug::m_debugTelnet.showColors(true); // Color
 	String helpCmd = "??\nrestart\nreset\n";
-	helpCmd += "HO - horizontal OPEN\nHC - horizontal CLOSE\nHN - horizontal NEUTRE";
-	helpCmd += "TA - Trappe ACTIVE\nTD - Trappe deACTIVE\n";
-	helpCmd += "FC - FORCE CLOSED STATUS\nFORCE OPENED STATUS\n";
+	helpCmd += "ho - horizontal OPEN\nHC - horizontal CLOSE\nHN - horizontal NEUTRE";
+	helpCmd += "ta - Trappe ACTIVE\nTD - Trappe deACTIVE\n";
+	helpCmd += "fc - FORCE CLOSED STATUS\nfoc - FORCE OPENED STATUS\n";
+	helpCmd += "st - actioneur [], command []satus[], Courant[][] \n";
 
 	MyDebug::m_debugTelnet.setHelpProjectsCmds(helpCmd);
 	MyDebug::m_debugTelnet.setCallBackProjectCmds(&processCmdRemoteDebug);
@@ -254,7 +255,7 @@ void loop()
 		intensityCtl.handle();
 		if (mtTimer.is1SPeriod())
 		{
-		DEBUGLOGF("courant [%f], cc[%d], elapse[%d] \n", intensityCtl.m_fIntensityMeasure,  analogRead(pinInyensity),  commandDriverMain.getElapse() / 1000);
+			DEBUGLOGF("courant reel[%f], Max courant reel[%f], Max courant accepted[%f], cc[%d], elapse[%d] \n", intensityCtl.m_fIntensityMeasure, intensityCtl.m_fMaxIntensityMeasure, commandDriverMain.m_maxCurrentAccepted, analogRead(pinInyensity),  commandDriverMain.getElapse() / 1000);
 		}
 	}
 	commandDriverMain.handle(intensityCtl.m_fIntensityMeasure, digitalRead(pinUpSensorMain));

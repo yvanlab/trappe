@@ -37,6 +37,8 @@ public:
     void begin(uint8_t upSensor) ;
     void handle(float fIntensity, bool isUpSensorActivated);
     
+    float calculateMaxCurrent();
+    
     void stopTechnicalActionneur();
     void stopActionneur();
 
@@ -66,6 +68,8 @@ public:
     ACTIONNEUR_COMMAND m_command = COMMAND_STOP;
     ACTIONNEUR_STATUS m_status   = STATUS_CLOSED;
     ACTIONNEUR_SELECTED m_actioneur = ACTIONEUR_HORIZONTAL;
+
+    float m_maxCurrentAccepted = 0;
 
     uint8_t  m_pinCommandeDirectionUp;
     uint8_t  m_pinCommandeDirectionDown;

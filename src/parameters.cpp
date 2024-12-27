@@ -33,6 +33,12 @@ String Parameters::toJson()
 		ss = "\"timeUpSec\":\"" + String(m_timeUpSec) + "\",";
 		ss += "\"timeDownSec\":\"" + String(m_timeDownSec) + "\",";
 		ss += "\"maxPowerAmp\":\"" + String(m_maxPowerAmp) + "\",";
+
+    ss += "\"maxAmpDownHori\":\"" + String(m_maxAmpDownHori) + "\",";
+    ss += "\"maxAmpDownVert\":\"" + String(m_maxAmpDownVert) + "\",";
+    ss += "\"maxAmpUpHori\":\"" + String(m_maxAmpUpHori) + "\",";
+    ss += "\"maxAmpUpVert\":\"" + String(m_maxAmpUpVert) + "\",";
+
     ss += "\"minPowerAmp\":\"" + String(m_minPowerAmp) + "\",";
     ss += "\"delayIntensity\":\"" + String(m_delayIntensity) + "\",";
     ss += "\"managementMode\":\"" + String(m_managementMode) + "\"";
@@ -57,6 +63,12 @@ uint8_t Parameters::readData()
     if (!error) {
       m_timeUpSec = doc[F("timeUpSec")];
       m_timeDownSec = doc[F("timeDownSec")];
+
+      m_maxAmpDownHori = doc[F("maxAmpDownHori")];
+      m_maxAmpDownVert = doc[F("maxAmpDownVert")];
+      m_maxAmpUpHori = doc[F("maxAmpUpHori")];
+      m_maxAmpUpVert = doc[F("maxAmpUpVert")];
+
       m_maxPowerAmp = doc[F("maxPowerAmp")];
       m_minPowerAmp = doc[F("minPowerAmp")];
       m_delayIntensity = doc[F("delayIntensity")];

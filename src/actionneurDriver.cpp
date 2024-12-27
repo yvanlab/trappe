@@ -30,15 +30,49 @@ bool ActionneurDriver::isActionUnderProgress()
     return (m_status == STATUS_CLOSING || m_status == STATUS_OPENING);
 }
 
+float ActionneurDriver::calculateMaxCurrent() {
+    
+    float maxHori = 0;
+    float maxVert = 0;
+    if (m_status == STATUS_CLOSING) {
+        maxHori = param.m_maxAmpDownHori;
+        maxVert = param.m_maxAmpDownVert;
+    }
+    else if (m_status == STATUS_OPENING) {
+        maxHori = param.m_maxAmpUpHori;
+        maxVert = param.m_maxAmpUpVert;
+    }
+        
+        
+        switch (m_actioneur)
+        {
+        case ACTIONEUR_HORIZONTAL:
+            m_maxCurrentAccepted = maxHori;
+            break;
+        case ACTIONEUR_TRAPPE:
+            m_maxCurrentAccepted = maxVert;
+            break;
+        case ACTIONEUR_TRAPPE_AND_HORIZONTAL:
+            m_maxCurrentAccepted = maxHori + maxVert;
+            break;
+        default:
+            break;
+        }
+    
+    return m_maxCurrentAccepted ;
+}
+
 void ActionneurDriver::handle(float fIntensity, bool isUpSensorActivated)
 {
     if (m_status == STATUS_CLOSED || m_status == STATUS_OPENED || m_status == STATUS_CLOSING_STOPPED || m_status == STATUS_OPENING_STOPPED)
     {
         return;
     }
+
+    calculateMaxCurrent();
     if (fIntensity > param.m_maxPowerAmp && m_delayIntensity.isDone())
     {
-        DEBUGLOGF("Over intensity [%f] ==> STOP\n", fIntensity);
+        DEBUGLOGF("Over intensity [%f/%f] ==> STOP\n", fIntensity, param.m_maxPowerAmp);
         stopActionneur();
         return;
     }
@@ -52,10 +86,10 @@ void ActionneurDriver::handle(float fIntensity, bool isUpSensorActivated)
             // start trappe
             digitalWrite(m_pinCommandTrappe, true);
             m_actioneur = ACTIONEUR_TRAPPE;
-            DEBUGLOGF("under intensity while opening [%f] ==> CYCLE HORIZONTAL FINISHED \n", fIntensity);
+            DEBUGLOGF("under intensity while opening -intensity [%f/%f] ==> CYCLE HORIZONTAL FINISHED \n", fIntensity,param.m_minPowerAmp);
             intensityCtl.clean();
         } else {
-            DEBUGLOGF("under intensity while closing or opening [%f] ==> CYCLE CLOSING/OPENING FINISHED \n", fIntensity);
+            DEBUGLOGF("under intensity while closing or opening -intensity [%f/%f] ==> CYCLE CLOSING/OPENING FINISHED \n", fIntensity,param.m_minPowerAmp);
             stopTechnicalActionneur();
             if (m_status == STATUS_CLOSING) {
                 m_status = STATUS_CLOSED;    
@@ -140,7 +174,7 @@ void ActionneurDriver::startActioneurOpen()
     digitalWrite(m_pinCommandTrappe, true); // active la trappe en meme temps
     m_status = STATUS_OPENING;
     m_actioneur = ACTIONEUR_TRAPPE_AND_HORIZONTAL;
-    DEBUGLOGF("CMD Actionneur[Open]-ACTIONEUR_TRAPPE_AND_HORIZONTAL-delay courant [%d]\n",param.m_delayIntensity);
+    DEBUGLOGF("CMD Actionneur[Open]-ACTIONEUR_TRAPPE_AND_HORIZONTAL-courant : delay[%d] Max[%f]\n",param.m_delayIntensity, calculateMaxCurrent());
     m_workigStartTime = millis();
 }
 
@@ -166,6 +200,6 @@ void ActionneurDriver::startActioneurClose()
     digitalWrite(m_pinCommandTrappe, false); // trappe is deactivated : Only horizontal
     m_status = STATUS_CLOSING;
     m_actioneur = ACTIONEUR_HORIZONTAL;
-    DEBUGLOGF("CMD Actionneur[Close]-ACTIONEUR_HORIZONTAL-delay courant [%d]\n",param.m_delayIntensity);
+    DEBUGLOGF("CMD Actionneur[Close]-ACTIONEUR_HORIZONTAL- courant : delay[%d] Max[%f]\n",param.m_delayIntensity, calculateMaxCurrent());
     m_workigStartTime = millis();
 }

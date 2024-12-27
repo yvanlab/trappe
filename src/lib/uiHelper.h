@@ -57,6 +57,7 @@ public:
     void restartESP();
     void displaySetup();
     void cssStyle();
+    void jqueryminjs();
     void setSetup();
     virtual String  getJSon();
     virtual void jsonSetup();

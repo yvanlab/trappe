@@ -67,6 +67,7 @@ String WifiHelper::toString()
          "] SSID[" + WiFi.SSID() +
          "] LocalIP[" + WiFi.localIP().toString() +
          "] softIP[" + WiFi.softAPIP().toString() +
+         "] routerIP[" + WiFi.gatewayIP().toString() +
          "] status[" + String(WiFi.status(), DEC) + "]";
 }
 
@@ -114,12 +115,13 @@ wl_status_t WifiHelper::connectSSID(String &ssid, String &pass, IPAddress ip, St
 {
   if (ssid.isEmpty() || pass.isEmpty())
     return WL_NO_SSID_AVAIL;
+  if (!m_configuration->m_dynamicIP ){
+    // IPAddress gateway(192, 168, 1, 254); // IP address of the router
+    IPAddress subnet(255, 255, 255, 0);
+    IPAddress dns(8, 8, 4, 4);
 
-  // IPAddress gateway(192, 168, 1, 254); // IP address of the router
-  IPAddress subnet(255, 255, 255, 0);
-  IPAddress dns(8, 8, 4, 4);
-
-  WiFi.config(ip, m_configuration->m_routerIP, subnet, dns);
+    WiFi.config(ip, m_configuration->m_routerIP, subnet, dns);
+   } 
   // WiFi.config(ip, gateway, subnet);
   Serial.println("");
   switchOn();
