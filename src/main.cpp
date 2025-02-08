@@ -133,7 +133,7 @@ void setup()
 
 	MyDebug::m_debugTelnet.showColors(true); // Color
 	String helpCmd = "??\nrestart\nreset\n";
-	helpCmd += "ho - horizontal OPEN\nHC - horizontal CLOSE\nHN - horizontal NEUTRE";
+	helpCmd += "ho - horizontal OPEN\nHC - horizontal CLOSE\nHN - horizontal NEUTRE\n";
 	helpCmd += "ta - Trappe ACTIVE\nTD - Trappe deACTIVE\n";
 	helpCmd += "fc - FORCE CLOSED STATUS\nfoc - FORCE OPENED STATUS\n";
 	helpCmd += "st - actioneur [], command []satus[], Courant[][] \n";
@@ -255,10 +255,15 @@ void loop()
 		intensityCtl.handle();
 		if (mtTimer.is1SPeriod())
 		{
-			DEBUGLOGF("courant reel[%f], Max courant reel[%f], Max courant accepted[%f], cc[%d], elapse[%d] \n", intensityCtl.m_fIntensityMeasure, intensityCtl.m_fMaxIntensityMeasure, commandDriverMain.m_maxCurrentAccepted, analogRead(pinInyensity),  commandDriverMain.getElapse() / 1000);
+			DEBUGLOGF("courant mesure/instant[%f/%f], Max/Min [%f/%f], Max courant accepted[%f]", 
+				intensityCtl.m_fIntensityMeasure, 
+				analogRead(pinInyensity), 
+				intensityCtl.m_fMaxIntensityMeasure,
+				intensityCtl.m_fMinIntensityMeasure);
+			DEBUGLOGF("m_actioneur cc[%d], elapse[%d] \n"  ,commandDriverMain.m_maxCurrentAccepted,  commandDriverMain.getElapse() / 1000);
 		}
 	}
-	commandDriverMain.handle(intensityCtl.m_fIntensityMeasure, digitalRead(pinUpSensorMain));
+	commandDriverMain.handle(intensityCtl.m_fIntensityMeasure);
 
 	buttonCtl.handle();
 	ui.handleServer();

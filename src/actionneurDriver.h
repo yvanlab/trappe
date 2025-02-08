@@ -35,7 +35,7 @@ public:
 
     ActionneurDriver(uint8_t pinDirectionDown, uint8_t pinDirectionUp,uint8_t pinCommandTrappe);
     void begin(uint8_t upSensor) ;
-    void handle(float fIntensity, bool isUpSensorActivated);
+    void handle(float fIntensity);
     
     float calculateMaxCurrent();
     

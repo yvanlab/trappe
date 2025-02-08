@@ -1,0 +1,15 @@
+[
+  {
+    "applyTo": "jquery.min.js",
+    "headers": [
+      {
+        "name": "header-name",
+        "value": "header value"
+      },
+      {
+        "name": "header-name-1",
+        "value": "header value"
+      }
+    ]
+  }
+]
