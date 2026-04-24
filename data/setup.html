@@ -2,92 +2,171 @@
 <html lang="en">
 
 <head>
-	<meta charset=utf-8>
-	<title>Setup</title>
-	<link rel=stylesheet href=style.css>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Network Setup</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        header {
+            background: linear-gradient(135deg, #3c65a4 0%, #2f4f7f 100%);
+            color: white;
+            padding: 2rem 1rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+        header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+        }
+        .link-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .link-bar a {
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .link-bar a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .page {
+            width: min(100%, 1200px);
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #31415a;
+        }
+        .button-bar {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .save-button {
+            min-width: 200px;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: #27ae60;
+        }
+        .save-button:hover {
+            background: #229954;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            min-height: 20px;
+        }
+    </style>
 </head>
 
 <body>
-	
-	<form id=Network action="/setSetup" method="get">
-		<h1>Fonctions de base</h1>
-		<div style="text-align: center;">
-			
-			<p>
-				<table width=100%>
-				<tr>
-					<td><a href="/firmware" target="_blank">Firmware</a></td>
-					<td><a href="/fileSetup" target="_blank">Congig file</a></td>
-				</tr>
-				<tr>
-					<td><a href="/restart" target="_blank">Redemarrer</a></td>
-					<td><a href="/reset" target="_blank">Wifi Reset</a></td>
-				</tr>			
-				</table>
-			</p>
-		</div>	
-		
-		
-		<h1>Configuration du Module</h1>
-		<fieldset>
-			<legend>Routeur</legend>
-			<ol>
-				<li>
-					<label>ssid</label>
-					<input name='ssid' required></input>
-				</li>
-				<li>
-					<label>password</label>
-					<input name=password type=text required>
-			</ol>
-		</fieldset>
-		<fieldset>
-			<legend>Parametre Module</legend>
-			<ol>
-				<li>
-					<label for="dynamicIP">Dynamic IP</label>
-					<input type="checkbox" id="dynamicIP" name="dynamicIP" value = "active">
-				</li>
-				<li>
-					<label for=routerIP >router IP</label>
-					<input name=routerIP type=text>
-				</li>
-				<li>
-					<label for=IP>Module IP</label>
-					<input name=IP type=text required>
-				</li>
-				<li>
-					<label for=moduleName>Module Name</label>
-					<input name=moduleName type=text required>
-				</li>
-				<li>
-					<label for=mdns>mdns</label>
-					<input name=mdns type=text required>
-				</li>
-				<li>
-					<label for=mdnsAP>mdnsAP</label>
-					<input name=mdnsAP type=text required>
-				</li>
+    <div class="page">
+        <header>
+            <h1>&nbsp;&#9881; Network & Module Setup</h1>
+            <p style="margin: 0; opacity: 0.9;">Configure WiFi, network, and module settings</p>
+            <div class="link-bar">
+                <a href="/">&larr; Back to Dashboard</a>
+                <a href="/firmware" target="_blank">&nbsp;&#128230; Firmware</a>
+                <a href="/help" target="_blank">&nbsp;&#10067; Help</a>
+                <a href="/restart" target="_blank">&nbsp;&#128260; Restart</a>
+                <a href="/reset" target="_blank">&nbsp;&#128260; WiFi Reset</a>
+            </div>
+        </header>
 
-			</ol>
-		</fieldset>
-		<fieldset>
-			<legend>IOT Dependence</legend>
-			<ol>
-				<li>
-					<label>Clef privee</label>
-					<input name='privateKey' ></input>
-				</li>
-				<li>
-					<label>Clef public</label>
-					<input name=publicKey type=text>
-			</ol>
-		</fieldset>
+        <form id="Network" action="/setSetup" method="get">
+            <div class="section-grid">
+                <!-- WiFi Configuration -->
+                <div class="card">
+                    <h2>&nbsp;&#128225; WiFi Configuration</h2>
+                    <div class="form-group">
+                        <label for="ssid">Network Name (SSID)</label>
+                        <input type="text" id="ssid" name="ssid" required placeholder="Enter WiFi network name">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">WiFi Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter WiFi password">
+                    </div>
+                </div>
 
-		<fieldset>
-			<button type=submit>Sauver</button>
-		</fieldset>
-	</form>
+                <!-- Module Network Parameters -->
+                <div class="card">
+                    <h2>&nbsp;&#127760; Network Parameters</h2>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="dynamicIP" name="dynamicIP" value="active">
+                            <label for="dynamicIP" style="margin-bottom: 0;">Use Dynamic IP (DHCP)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="routerIP">Router IP Address</label>
+                        <input type="text" id="routerIP" name="routerIP" placeholder="192.168.1.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="IP">Module Static IP</label>
+                        <input type="text" id="IP" name="IP" required placeholder="192.168.1.100">
+                    </div>
+                </div>
+
+                <!-- Module Identity -->
+                <div class="card">
+                    <h2>&nbsp;&#128721; Module Identity</h2>
+                    <div class="form-group">
+                        <label for="moduleName">Module Name</label>
+                        <input type="text" id="moduleName" name="moduleName" required placeholder="e.g., Trappe-01">
+                    </div>
+                    <div class="form-group">
+                        <label for="mdns">mDNS Hostname</label>
+                        <input type="text" id="mdns" name="mdns" required placeholder="e.g., trappe" help="Used for local network discovery">
+                    </div>
+                    <div class="form-group">
+                        <label for="mdnsAP">mDNS AP Hostname</label>
+                        <input type="text" id="mdnsAP" name="mdnsAP" required placeholder="e.g., trappe-ap">
+                    </div>
+                </div>
+
+                <!-- IoT Security -->
+                <div class="card">
+                    <h2>&nbsp;&#128274; IoT Security Keys</h2>
+                    <div class="form-group">
+                        <label for="privateKey">Private Key</label>
+                        <input type="text" id="privateKey" name="privateKey" placeholder="Your private key">
+                    </div>
+                    <div class="form-group">
+                        <label for="publicKey">Public Key</label>
+                        <input type="text" id="publicKey" name="publicKey" placeholder="Your public key">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-bar">
+                <button type="submit" class="save-button">&nbsp;&#128190; Save Configuration</button>
+            </div>
+        </form>
+    </div>
 	<script>
 function update(responseText) {
 				var myObj = JSON.parse(responseText);

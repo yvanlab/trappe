@@ -1,25 +1,176 @@
 
-<link href="style.css" rel="stylesheet">
-<script src='jquery.min.js'>
+<!DOCTYPE html>
+<html lang="en">
 
-</script>
-<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
-    <input type='file' name='update' id='file' onchange='sub(this)' style=display:none>
-    <label id='file-input' for='file'> Choose file...</label>
-    <input type='submit' class=btn value='Update'><br><br>
-    <div id='prg'></div><br>
-    <div id='prgbar'>
-        <div id='bar'></div>
-    </div><br>
-</form>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firmware Update</title>
+    <link href="style.css" rel="stylesheet">
+    <script src='jquery.min.js'></script>
+    <style>
+        header {
+            background: linear-gradient(135deg, #3c65a4 0%, #2f4f7f 100%);
+            color: white;
+            padding: 2rem 1rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+        header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+        }
+        .link-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .link-bar a {
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .link-bar a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .page {
+            width: min(100%, 1200px);
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        #prgbar {
+            background: #e3e8f0;
+            border-radius: 8px;
+            height: 24px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        #bar {
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        #prg {
+            color: #3c65a4;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        #file-input {
+            display: inline-block;
+            padding: 1rem;
+            background: #f0f4fa;
+            border: 2px dashed #6f8ad4;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #3c65a4;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-bottom: 1rem;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        #file-input:hover {
+            background: #e8eef9;
+            border-color: #3c65a4;
+        }
+        .upload-section {
+            margin-top: 2rem;
+        }
+    </style>
+</head>
 
-<script>
-function sub(a) { 
-    var b = a.value.split("\\\\"); 
-    document.getElementById("file-input").innerHTML = "   " + b[b.length - 1] 
-    } 
-    $("form").submit(function (c) { 
-        c.preventDefault(); 
-        var a = $("#upload_form")[0]; 
-        var b = new FormData(a); 
-        $.ajax({ url: "/update", type: "POST", data: b, contentType: false, processData: false, xhr: function () { var d = new window.XMLHttpRequest(); d.upload.addEventListener("progress", function (e) { if (e.lengthComputable) { var f = e.loaded / e.total; $("#prg").html("progress: " + Math.round(f * 100) + "%"); $("#bar").css("width", Math.round(f * 100) + "%") } }, false); return d }, success: function (f, e) { console.log("success!") }, error: function (e, d, f) { } }) });</script>
+<body>
+    <div class="page">
+        <header>
+            <h1>&nbsp;&#128230; Firmware Update</h1>
+            <p style="margin: 0; opacity: 0.9;">Upload a new firmware file to update your device</p>
+            <div class="link-bar">
+                <a href="/">&larr; Back to Dashboard</a>
+                <a href="/setup" target="_blank">&nbsp;&#9881; Setup</a>
+                <a href="/help" target="_blank">&nbsp;&#10067; Help</a>
+            </div>
+        </header>
+
+        <div class="card">
+            <h2>&nbsp;&#128260; Firmware Upload</h2>
+            <form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
+                <div class="form-group">
+                    <label>Select firmware file (.bin)</label>
+                    <input type='file' name='update' id='file' onchange='sub(this)' style="display:none" accept=".bin,.hex">
+                    <label id='file-input' for='file'>&nbsp;&#128193; Choose file...</label>
+                </div>
+
+                <div id="prg" style="margin-top: 1.5rem;"></div>
+                <div id='prgbar' style="display: none;">
+                    <div id='bar' style="width: 0%"></div>
+                </div>
+
+                <button type='submit' class="save-button" style="width: 100%; margin-top: 1.5rem; background: #e74c3c;">&nbsp;&#11014; Upload Firmware</button>
+            </form>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem; background: #fef9e7;">
+            <h3 style="color: #d68910; margin-top: 0;">&nbsp;&#9888; Important Notes</h3>
+            <ul style="color: #666;">
+                <li>Do not disconnect power or close this page during upload</li>
+                <li>The device will restart automatically after upload completes</li>
+                <li>Upload may take 30-60 seconds depending on file size</li>
+                <li>Only upload official firmware files from trusted sources</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function sub(a) { 
+            var b = a.value.split("\\"); 
+            document.getElementById("file-input").innerHTML = "   &nbsp;&#128193; " + (b[b.length - 1] || "Choose file...");
+        }
+        $("form").submit(function (c) { 
+            c.preventDefault(); 
+            document.getElementById('prg').style.display = 'block';
+            document.getElementById('prgbar').style.display = 'block';
+            var a = $("#upload_form")[0]; 
+            var b = new FormData(a); 
+            $.ajax({ 
+                url: "/update", 
+                type: "POST", 
+                data: b, 
+                contentType: false, 
+                processData: false, 
+                xhr: function () { 
+                    var d = new window.XMLHttpRequest(); 
+                    d.upload.addEventListener("progress", function (e) { 
+                        if (e.lengthComputable) { 
+                            var f = e.loaded / e.total; 
+                            var percentage = Math.round(f * 100);
+                            $("#prg").html("&nbsp;&#128200; Upload progress: " + percentage + "%"); 
+                            $("#bar").css("width", percentage + "%").text(percentage + "%");
+                        } 
+                    }, false); 
+                    return d; 
+                }, 
+                success: function (f, e) { 
+                    $("#prg").html("&nbsp;&#10004; Upload successful! Device is restarting...").css("color", "#27ae60");
+                }, 
+                error: function (e, d, f) { 
+                    $("#prg").html("&nbsp;&#10008; Upload failed. Please try again.").css("color", "#e74c3c");
+                } 
+            }); 
+        });
+    </script>
+</body>
+
+</html>

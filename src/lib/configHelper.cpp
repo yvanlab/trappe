@@ -75,22 +75,22 @@ uint8_t ConfigHelper::readData()
   char cfgFileName[] = "/config.json";
   if (SPIFFS.exists(cfgFileName))
   {
-    DynamicJsonDocument doc(30000);
+    DynamicJsonDocument doc(1024);
     file = SPIFFS.open(cfgFileName, FILE_READ);
     DeserializationError error = deserializeJson(doc, file);
     if (!error)
     {
-      m_version = doc[F("version")];
-      m_ssid = doc[F("ssid")].as<String>();
-      m_dynamicIP = doc[F("dynamicIP")].as<int8_t>();
-      m_routerIP.fromString(doc[F("routerIP")].as<String>());
-      m_IP.fromString(doc[F("IP")].as<String>());
-      m_moduleName = doc[F("moduleName")].as<String>();
-      m_mdns = doc[F("mdns")].as<String>();
-      m_mdnsAP = doc[F("mdnsAP")].as<String>();
-      m_password = doc[F("password")].as<String>();
-      m_privateKey = doc[F("privateKey")].as<String>();
-      m_publicKey = doc[F("publicKey")].as<String>();
+      m_version = doc["version"];
+      m_ssid = doc["ssid"].as<String>();
+      m_dynamicIP = doc["dynamicIP"].as<int8_t>();
+      m_routerIP.fromString(doc["routerIP"].as<String>());
+      m_IP.fromString(doc["IP"].as<String>());
+      m_moduleName = doc["moduleName"].as<String>();
+      m_mdns = doc["mdns"].as<String>();
+      m_mdnsAP = doc["mdnsAP"].as<String>();
+      m_password = doc["password"].as<String>();
+      m_privateKey = doc["privateKey"].as<String>();
+      m_publicKey = doc["publicKey"].as<String>();
     }
     else
     {

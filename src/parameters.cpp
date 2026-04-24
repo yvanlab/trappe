@@ -57,22 +57,22 @@ uint8_t Parameters::readData()
   
   char cfgFileName[] =  "/param.json";
   if (SPIFFS.exists(cfgFileName)){
-    DynamicJsonDocument doc(30000);
+    DynamicJsonDocument doc(1024);
     fs::File file = SPIFFS.open(cfgFileName, FILE_READ);
     DeserializationError error = deserializeJson(doc, file);
     if (!error) {
-      m_timeUpSec = doc[F("timeUpSec")];
-      m_timeDownSec = doc[F("timeDownSec")];
+      m_timeUpSec = doc["timeUpSec"];
+      m_timeDownSec = doc["timeDownSec"];
 
-      m_maxAmpDownHori = doc[F("maxAmpDownHori")];
-      m_maxAmpDownVert = doc[F("maxAmpDownVert")];
-      m_maxAmpUpHori = doc[F("maxAmpUpHori")];
-      m_maxAmpUpVert = doc[F("maxAmpUpVert")];
+      m_maxAmpDownHori = doc["maxAmpDownHori"];
+      m_maxAmpDownVert = doc["maxAmpDownVert"];
+      m_maxAmpUpHori = doc["maxAmpUpHori"];
+      m_maxAmpUpVert = doc["maxAmpUpVert"];
 
-      m_maxPowerAmp = doc[F("maxPowerAmp")];
-      m_minPowerAmp = doc[F("minPowerAmp")];
-      m_delayIntensity = doc[F("delayIntensity")];
-      m_managementMode = doc[F("managementMode")];
+      m_maxPowerAmp = doc["maxPowerAmp"];
+      m_minPowerAmp = doc["minPowerAmp"];
+      m_delayIntensity = doc["delayIntensity"];
+      m_managementMode = doc["managementMode"];
     } else {
       DEBUGLOGF("Config file SART READING [%s]",error.c_str());
     }

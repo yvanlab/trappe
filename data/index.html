@@ -1,118 +1,239 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Trappe Configuration</title>
+	<link rel="stylesheet" href="style.css">
+	<style>
+		header {
+			background: linear-gradient(135deg, #3c65a4 0%, #2f4f7f 100%);
+			color: white;
+			padding: 2rem 1rem;
+			border-radius: 16px;
+			margin-bottom: 2rem;
+		}
+		header h1 {
+			margin: 0 0 1rem 0;
+			font-size: 2rem;
+		}
+		.status-row {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 1rem;
+			margin-bottom: 1.5rem;
+		}
+		.status-item {
+			background: rgba(255, 255, 255, 0.15);
+			padding: 1rem;
+			border-radius: 12px;
+			text-align: center;
+		}
+		.status-item label {
+			display: block;
+			font-size: 0.85rem;
+			opacity: 0.9;
+			margin-bottom: 0.5rem;
+		}
+		.status-item span {
+			display: block;
+			font-size: 1.3rem;
+			font-weight: bold;
+		}
+		.link-bar {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			margin-top: 1.5rem;
+		}
+		.link-bar a {
+			padding: 0.6rem 1rem;
+			background: rgba(255, 255, 255, 0.2);
+			color: white;
+			text-decoration: none;
+			border-radius: 8px;
+			font-size: 0.9rem;
+			transition: background 0.2s;
+		}
+		.link-bar a:hover {
+			background: rgba(255, 255, 255, 0.3);
+		}
+		.page {
+			width: min(100%, 1200px);
+			margin: 0 auto;
+			padding: 1rem;
+		}
+		.section-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 1.5rem;
+			margin-bottom: 2rem;
+		}
+		.form-group {
+			margin-bottom: 1.25rem;
+		}
+		.form-group label {
+			display: block;
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+			color: #31415a;
+		}
+		.control-group {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+			gap: 0.75rem;
+		}
+		.control-group button {
+			padding: 0.75rem;
+			font-size: 0.9rem;
+		}
+		.button-bar {
+			display: flex;
+			gap: 1rem;
+			margin-top: 2rem;
+			justify-content: center;
+		}
+		.save-button {
+			min-width: 200px;
+			padding: 1rem;
+			font-size: 1.1rem;
+			background: #27ae60;
+		}
+		.save-button:hover {
+			background: #229954;
+		}
+	</style>
 </head>
 
 <body>
-	<p>&nbsp;</p>
-	<h1 style="text-align: center;">
-		<span id="modulename">Module</span> configuration
-	</h1>
-	<div style="text-align: center;">
-		<p>
-			Version : <span id="version">3.0</span>
-		</p>
+	<div class="page">
+		<header>
+			<h1><span id="modulename">Module</span> Configuration</h1>
+			<div class="status-row">
+				<div class="status-item">
+					<label>Version</label>
+					<span id="version">3.0</span>
+				</div>
+				<div class="status-item">
+					<label>Build Date</label>
+					<span id="builddate">10/08/1900</span>
+				</div>
+				<div class="status-item">
+					<label>Uptime</label>
+					<span id="uptime">--</span>
+				</div>
+			</div>
+			<div class="link-bar">
+				<a href="/setup" target="_blank">&nbsp;&#9881; Network Setup</a>
+				<a href="/firmware" target="_blank">&nbsp;&#128230; Firmware</a>
+				<a href="/help" target="_blank">&nbsp;&#10067; Help</a>
+				<a href="/restart" target="_blank">&nbsp;&#128260; Restart</a>
+				<a href="/reset" target="_blank">&nbsp;&#128260; WiFi Reset</a>
+			</div>
+		</header>
+
+		<div class="section-grid">
+			<!-- Timing Control Section -->
+			<div class="card">
+				<h2>&nbsp;&#9200; Timing Control</h2>
+				<div class="form-group">
+					<label for="timeDownSec">Close Duration (seconds)</label>
+					<input type="number" id="timeDownSec" min="0" max="300" step="1"
+						onchange="changeSetting('timeDownSec', this.value)" />
+				</div>
+				<div class="form-group">
+					<label for="timeUpSec">Open Duration (seconds)</label>
+					<input type="number" id="timeUpSec" min="0" max="300" step="1"
+						onchange="changeSetting('timeUpSec', this.value)" />
+				</div>
+				<div class="form-group">
+					<label for="managementMode">Operation Mode</label>
+					<select id="managementMode" onchange="changeSetting('managementMode', this.value)">
+						<option value="0">Manual Control</option>
+						<option value="1">Automatic</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Manual Control Section -->
+			<div class="card">
+				<h2>&nbsp;&#127918; Manual Controls</h2>
+				<p style="color: #666; font-size: 0.9rem; margin-top: 0;">Quick action buttons</p>
+				<div class="control-group" style="margin-bottom: 1rem;">
+					<button onclick="changeSetting('btDown', 1)" style="background: #e74c3c;">Close</button>
+					<button onclick="changeSetting('btUp', 1)" style="background: #27ae60;">Open</button>
+					<button onclick="changeSetting('btStop', 1)" style="background: #f39c12;">Stop</button>
+				</div>
+				<hr style="margin: 1rem 0; border: none; border-top: 1px solid #e0e0e0;">
+				<p style="color: #666; font-size: 0.9rem; margin: 0 0 0.75rem 0;">Long duration actions</p>
+				<div class="control-group" style="margin-bottom: 1rem;">
+					<button onclick="changeSetting('btDownLong', 1)" style="background: #c0392b; font-size: 0.8rem;">Full Close</button>
+					<button onclick="changeSetting('btUpLong', 1)" style="background: #1e8449; font-size: 0.8rem;">Full Open</button>
+				</div>
+				<div class="control-group">
+					<button onclick="changeSetting('btStopDownLong', 1)" style="background: #d68910; font-size: 0.8rem;">Stop Close</button>
+					<button onclick="changeSetting('btStopUpLong', 1)" style="background: #d68910; font-size: 0.8rem;">Stop Open</button>
+				</div>
+			</div>
+
+			<!-- Motor Current Limits - Close -->
+			<div class="card">
+				<h2>&nbsp;&#9889; Close Current Limits</h2>
+				<p style="color: #666; font-size: 0.9rem; margin-top: 0;">Maximum amperage when closing</p>
+				<div class="form-group">
+					<label for="maxAmpDownHori">Horizontal (A)</label>
+					<input type="number" id="maxAmpDownHori" min="0" max="20" step="0.1"
+						onchange="changeSetting('maxAmpDownHori', this.value)" />
+				</div>
+				<div class="form-group">
+					<label for="maxAmpDownVert">Vertical (A)</label>
+					<input type="number" id="maxAmpDownVert" min="0" max="20" step="0.1"
+						onchange="changeSetting('maxAmpDownVert', this.value)" />
+				</div>
+			</div>
+
+			<!-- Motor Current Limits - Open -->
+			<div class="card">
+				<h2>&nbsp;&#9889; Open Current Limits</h2>
+				<p style="color: #666; font-size: 0.9rem; margin-top: 0;">Maximum amperage when opening</p>
+				<div class="form-group">
+					<label for="maxAmpUpHori">Horizontal (A)</label>
+					<input type="number" id="maxAmpUpHori" min="0" max="20" step="0.1"
+						onchange="changeSetting('maxAmpUpHori', this.value)" />
+				</div>
+				<div class="form-group">
+					<label for="maxAmpUpVert">Vertical (A)</label>
+					<input type="number" id="maxAmpUpVert" min="0" max="20" step="0.1"
+						onchange="changeSetting('maxAmpUpVert', this.value)" />
+				</div>
+			</div>
+
+			<!-- Power Management Section -->
+			<div class="card">
+				<h2>&nbsp;&#128267; Power Management</h2>
+				<div class="form-group">
+					<label for="maxPowerAmp">Maximum Current (A)</label>
+					<input type="number" id="maxPowerAmp" min="0" max="50" step="0.1"
+						onchange="changeSetting('maxPowerAmp', this.value)" />
+				</div>
+				<div class="form-group">
+					<label for="minPowerAmp">Minimum Current (A)</label>
+					<input type="number" id="minPowerAmp" min="0" max="50" step="0.1"
+						onchange="changeSetting('minPowerAmp', this.value)" />
+				</div>
+				<div class="form-group">
+					<label for="delayIntensity">Intensity Delay (ms)</label>
+					<input type="number" id="delayIntensity" min="0" max="5000" step="100"
+						onchange="changeSetting('delayIntensity', this.value)" />
+				</div>
+			</div>
+		</div>
+
+		<div class="button-bar">
+			<button class="save-button" onclick="saveConfiguration()">&nbsp;&#128190; Save Configuration</button>
+		</div>
 	</div>
-	<div style="text-align: center;">
-		<p>
-			Date build : <span id="builddate">10/08/1900</span>
-		</p>
-	</div>
-	<div style="text-align: center;">
-		<p>
-			Up time : <span id="uptime">un moment</span>
-		</p>
-	</div>
-	<div style="text-align: center;">
-		<p>
-			<a href="/reset" target="_blank">Wifi Reset</a>/<a href="/restart" target="_blank">Restart</a>/<a
-				href="/firmware" target="_blank">Firmware</a>/<a href="/setup" target="_blank">Configuration</a>/<a </p>
-	</div>
-	<hr style="margin-top: 51px; margin-left: auto; width: 177px; margin-right: auto;" />
-	<div>
-		<h3 style="height: 3px;">Parametrage</h3>
-	</div>
-	<div>
-		<hr />
-		<table>
-			<tbody>
-				<tr>
-					<td>
-						<table>
-							<tbody>
-								<tr>
-									<th>Duree descente (s)</th>
-									<th>Duree Monte (s)</th>
-									<th>General</th>
-									<th>Mode 0:Manu 1:Auto</th>
-								</tr>
-								<tr>
-									<td><input id="timeDownSec" type="number"
-											onchange="changeSetting('timeDownSec', this.value)" /></td>
-									<td><input id="timeUpSec" type="number"
-											onchange="changeSetting('timeUpSec', this.value)" /></td>
-									<td>
-										<table>
-											
-										</table>
-									</td>
-									<td><input id="managementMode" type="number" min="0" max="1"
-											onchange="changeSetting('managementMode', this.value)" /></td>
-								</tr>
-								<tr>
-									<td><button onclick="changeSetting('btDown', 1)">Fermer</button></td>
-									<td><button onclick="changeSetting('btUp', 1)">Ouvrir</button></td>
-									<td><button onclick="changeSetting('btStop', 1)">Stop</button></td>
-								</tr>
-								<tr>
-									<td><button onclick="changeSetting('btDownLong', 1)">Fermer Long</button></td>
-									<td><button onclick="changeSetting('btUpLong', 1)">Ouvrir Long</button></td>
-									<td><button onclick="changeSetting('btStopDownLong', 1)">Stop Fermer Long</button>
-									</td>
-									<td><button onclick="changeSetting('btStopUpLong', 1)">Stop Ouvrir Long</button>
-									</td>
-								</tr>
-								<tr>
-									<td>Max Amp Fermeture</td>
-									<td>Max Amp Ouverture</td>
-									<td>Amp Minimum/Utilise</td>
-									
-								</tr>
-								<tr>
-									<td>Hori<input style="width: 7em" id="maxAmpDownHori" type="number"
-										onchange="changeSetting('maxAmpDownHori', this.value)" /></td>
-										<td>Hori<input style="width: 7em" id="maxAmpUpHori" type="number"
-											onchange="changeSetting('maxAmpUpHori', this.value)" /></td>
-											
-												<td>Used<input style="width: 7em" id="maxPowerAmp" type="number"
-														onchange="changeSetting('maxPowerAmp', this.value)" /></td>
-														<td>delay<input style="width: 7em" id="delayIntensity" type="number"
-															onchange="changeSetting('delayIntensity', this.value)" /></td>			
-											
-												
-											
-								</tr>
-								<tr>
-									<td>Vert<input style="width: 7em" id="maxAmpDownVert" type="number"
-										onchange="changeSetting('maxAmpDownVert', this.value)" /></td>
-										<td>Vert<input style="width: 7em" id="maxAmpUpVert" type="number"
-											onchange="changeSetting('maxAmpUpVert', this.value)" /></td>
-											<td>Min<input style="width: 7em" id="minPowerAmp" type="number"
-												onchange="changeSetting('minPowerAmp', this.value)" /></td>
-									
-								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<hr />
-	<h2>
-		<button onclick="saveConfiguration()">Save</button>
-	</h2>
 
 	<script>
 
